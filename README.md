@@ -27,7 +27,7 @@ Les pages HTML sont **fabriquées** à partir des fichiers de `data/`. On ne ret
 |---|---|
 | bandeau du haut, menu, textes de l'accueil, photo principale, lookbook, texte de livraison | `data/site.json` |
 | détails produit (puces), guide des tailles, produits liés, contenu des collections | `data/content.json` |
-| produits (noms, prix, stock, photos, descriptions) | `data/products.json` (copie de Shopify) |
+| produits (noms, prix, stock, photos, descriptions) | dans l'admin Shopify, puis synchro (plus bas). Ne pas modifier `data/products.json` à la main : il est remplacé à chaque synchro |
 | pages légales | `data/policies/*.html` |
 | apparence | `assets/css/style.css` |
 | comportements (menu, galerie, tailles…) | `assets/js/site.js` |
@@ -50,7 +50,7 @@ python outils/sync.py
 python outils/build.py
 ```
 
-(`python outils/sync.py --images` ne télécharge que les images manquantes, sans toucher aux produits.)  
+(`python outils/sync.py --images` ne télécharge que les images manquantes, sans toucher aux produits ; `--force` retélécharge aussi les photos remplacées sous le même nom. La synchro refuse d'écrire si la boutique ne répond pas en euros.)  
 Un nouveau produit doit aussi être ajouté à sa collection dans `data/content.json` (et, si besoin, ses puces « Product Details » et son guide des tailles).
 
 ## Voir le site en local
@@ -64,8 +64,30 @@ Puis ouvrir http://localhost:8000
 ## Mise en ligne (GitHub Pages)
 
 1. Dans `data/site.json`, mettre `"base_path": "/NOM-DU-DEPOT/"` et `"site_url": "https://UTILISATEUR.github.io/NOM-DU-DEPOT"`, puis `python outils/build.py`.
-2. Pousser sur GitHub, puis *Settings → Pages → Deploy from a branch → main / (root)*.
-3. Avec un nom de domaine à soi (ex. madebyscu.com) : `"base_path": "/"`, `"site_url": "https://madebyscu.com"`, et ajouter le domaine dans *Settings → Pages*. Si le domaine quitte Shopify, mettre l'adresse `xxxx.myshopify.com` de la boutique dans `"shopify_domain"` pour que formulaires et compte continuent de marcher.
+2. Pousser sur GitHub (dépôt **public** : obligatoire pour Pages sur un compte gratuit), puis *Settings → Pages → Deploy from a branch → main / (root)*.
+3. **Attention : tant que l'achat n'est pas branché, ne pas déplacer madebyscu.com**, sinon les clients ne peuvent plus commander. Plus tard, avec un nom de domaine à soi (ex. madebyscu.com) : `"base_path": "/"`, `"site_url": "https://madebyscu.com"`, et ajouter le domaine dans *Settings → Pages*. Si le domaine quitte Shopify, mettre l'adresse `xxxx.myshopify.com` de la boutique dans `"shopify_domain"` pour que formulaires et compte continuent de marcher.
+
+## Mettre à jour le site en ligne
+
+Après chaque modification (ou synchro) :
+
+```powershell
+python outils/build.py
+```
+
+```powershell
+git add -A
+```
+
+```powershell
+git commit -m "Ce qui a changé"
+```
+
+```powershell
+git push
+```
+
+GitHub Pages republie le site en quelques minutes.
 
 ## Crédits
 

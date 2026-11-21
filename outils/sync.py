@@ -14,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 IMG = ROOT / "assets" / "img"
+COOKIE = "localization=FR; cart_currency=EUR"  # cookies de pays : memes prix en euros que la page ?country=FR
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
 
 
@@ -92,11 +93,13 @@ def images_wanted():
 def sync_products():
     site = json.loads((DATA / "site.json").read_text(encoding="utf-8"))
     url = f"https://{site['shopify_domain']}/products.json?limit=250"
-    # cookies de pays : memes prix en euros que la page ?country=FR
-    raw = get(url, accept="application/json", cookie="localization=FR; cart_currency=EUR")
-    data = json.loads(raw)
+    data = json.loads(get(url, accept="application/json", cookie=COOKIE))
     if not data.get("products"):
         raise RuntimeError("reponse vide, products.json garde tel quel")
+    # sans le bon pays, Shopify repond en livres : on refuse plutot que d'afficher de faux prix
+    cur = json.loads(get(f"https://{site['shopify_domain']}/cart.js", accept="application/json", cookie=COOKIE)).get("currency")
+    if cur != site["currency"]["code"]:
+        raise RuntimeError(f"boutique en {cur}, pas en {site['currency']['code']} : products.json garde tel quel")
     (DATA / "products.json").write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(f"products.json : {len(data['products'])} produits")
 
