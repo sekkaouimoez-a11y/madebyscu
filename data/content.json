@@ -1,0 +1,106 @@
+{
+ "_aide": "Contenu en plus de products.json : details, guide des tailles, produits lies, collections. Apres modif : python outils/build.py",
+ "products": {
+  "cherry-zip-up": {
+   "details": [
+    "Custom panelling",
+    "Unique front pocket",
+    "Engraved zipper",
+    "Logo embroidery",
+    "Large hood",
+    "Unique boxy fit"
+   ],
+   "size_guide": "//madebyscu.com/cdn/shop/files/denim_details_50.png?v=1790553343&width=2000",
+   "related": [
+    "cherry-sweats"
+   ]
+  },
+  "cherry-sweats": {
+   "details": [
+    "Custom panelling",
+    "Unique shape",
+    "Logo embroidery",
+    "Tapered bottom"
+   ],
+   "size_guide": "//madebyscu.com/cdn/shop/files/denim_details_49.png?v=1790551820&width=2000",
+   "related": [
+    "cherry-zip-up"
+   ]
+  },
+  "panel-denim": {
+   "details": [
+    "Custom panelling",
+    "Unique fit + design",
+    "Leather back-tab branding",
+    "Key loop",
+    "Grey washed colour"
+   ],
+   "size_guide": "//madebyscu.com/cdn/shop/files/denim_details_38.png?v=1782473870&width=2000",
+   "related": []
+  },
+  "basics-v1-hoodie": {
+   "details": [
+    "Custom cotton blend",
+    "Boxy fit + simple design",
+    "Embroidered logo",
+    "Oversized hood",
+    "Adjustable toggles"
+   ],
+   "size_guide": "//madebyscu.com/cdn/shop/files/ads_posts_36.png?v=1764294390&width=2000",
+   "related": []
+  },
+  "basics-v1-straight-leg-sweatpants": {
+   "details": [
+    "Custom cotton blend",
+    "Unique fit + simple design",
+    "Embroidered logo",
+    "Key loop",
+    "Adjustable toggles & drawstring"
+   ],
+   "size_guide": "//madebyscu.com/cdn/shop/files/ads_posts_37.png?v=1764294469&width=2000",
+   "related": [
+    "basics-v1-hoodie"
+   ]
+  }
+ },
+ "collections": {
+  "all": {
+   "title": "Products",
+   "products": [
+    "cherry-sweats",
+    "cherry-zip-up",
+    "panel-denim",
+    "basics-v1-hoodie",
+    "basics-v1-straight-leg-sweatpants"
+   ]
+  },
+  "cherry": {
+   "title": "CHERRY COLLECTION",
+   "products": [
+    "cherry-zip-up",
+    "cherry-sweats"
+   ]
+  },
+  "denim": {
+   "title": "DENIM",
+   "products": [
+    "panel-denim"
+   ]
+  },
+  "ljwrld-og-drop": {
+   "title": "BASICS COLLECTION",
+   "products": [
+    "basics-v1-hoodie",
+    "basics-v1-straight-leg-sweatpants"
+   ]
+  }
+ },
+ "pages": {
+  "denim-size-guide": {
+   "title": "Denim Size Guide",
+   "html": "<p><img alt=\"Panel Denim size chart (measurements per size)\" src=\"https://cdn.shopify.com/s/files/1/0778/5303/2797/files/denim_details_38.png?v=1782473870\"/></p> <ul> <li>Model is 5'11 wearing size L</li> </ul>",
+   "products": "all",
+   "description": "Panel Denim size guide. Model is 5'11 wearing size L."
+  }
+ }
+}

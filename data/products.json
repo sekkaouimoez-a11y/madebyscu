@@ -1,0 +1,898 @@
+{
+ "products": [
+  {
+   "id": 16595564233053,
+   "title": "Cherry Sweats",
+   "handle": "cherry-sweats",
+   "body_html": "<p style=\"text-align: center;\">Crafted from a 400GSM soft cotton blend fabric, the Cherry Sweats are cut &amp; sewn to our unique measurements &amp; style featuring a unique tapered fit. A staple in every wardrobe.</p>\n<p style=\"text-align: center;\"><strong>Model is 5\"10 wearing size L</strong></p>",
+   "published_at": "2026-09-28T00:16:22+01:00",
+   "created_at": "2026-09-28T00:16:21+01:00",
+   "updated_at": "2026-11-21T21:57:54+00:00",
+   "vendor": "madebyscu",
+   "product_type": "SWEATPANTS",
+   "tags": [],
+   "variants": [
+    {
+     "id": 66062715650397,
+     "title": "S",
+     "option1": "S",
+     "option2": null,
+     "option3": null,
+     "sku": "CHRYSWEATS",
+     "requires_shipping": true,
+     "taxable": false,
+     "featured_image": null,
+     "available": true,
+     "price": "64.95",
+     "grams": 700,
+     "compare_at_price": null,
+     "position": 1,
+     "product_id": 16595564233053,
+     "created_at": "2026-09-28T01:09:35+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    },
+    {
+     "id": 66062715683165,
+     "title": "M",
+     "option1": "M",
+     "option2": null,
+     "option3": null,
+     "sku": "CHRYSWEATM",
+     "requires_shipping": true,
+     "taxable": false,
+     "featured_image": null,
+     "available": true,
+     "price": "64.95",
+     "grams": 700,
+     "compare_at_price": null,
+     "position": 2,
+     "product_id": 16595564233053,
+     "created_at": "2026-09-28T01:09:35+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    },
+    {
+     "id": 66062715715933,
+     "title": "L",
+     "option1": "L",
+     "option2": null,
+     "option3": null,
+     "sku": "CHRYSWEATL",
+     "requires_shipping": true,
+     "taxable": false,
+     "featured_image": null,
+     "available": true,
+     "price": "64.95",
+     "grams": 700,
+     "compare_at_price": null,
+     "position": 3,
+     "product_id": 16595564233053,
+     "created_at": "2026-09-28T01:09:35+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    }
+   ],
+   "images": [
+    {
+     "id": 100740053139805,
+     "created_at": "2026-09-28T18:05:04+01:00",
+     "position": 1,
+     "updated_at": "2026-09-28T18:05:07+01:00",
+     "product_id": 16595564233053,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/5CA7C733-BF1E-43BD-9F97-75586EFB28EF.png?v=1790615107",
+     "width": 1800,
+     "height": 2400
+    },
+    {
+     "id": 100740053107037,
+     "created_at": "2026-09-28T18:05:04+01:00",
+     "position": 2,
+     "updated_at": "2026-09-28T18:05:07+01:00",
+     "product_id": 16595564233053,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/9773397E-28E4-46F5-AE37-8DF542B14748.png?v=1790615107",
+     "width": 1800,
+     "height": 2400
+    },
+    {
+     "id": 100740053074269,
+     "created_at": "2026-09-28T18:05:04+01:00",
+     "position": 3,
+     "updated_at": "2026-09-28T18:05:07+01:00",
+     "product_id": 16595564233053,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/97E5FDD6-53CB-45E6-B04F-06A66ECB81E7.png?v=1790615107",
+     "width": 1800,
+     "height": 2400
+    },
+    {
+     "id": 100740053008733,
+     "created_at": "2026-09-28T18:05:04+01:00",
+     "position": 4,
+     "updated_at": "2026-09-28T18:05:07+01:00",
+     "product_id": 16595564233053,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/0CF3741C-8CF6-4092-BAE9-9AC30999A91C.png?v=1790615107",
+     "width": 1800,
+     "height": 2400
+    },
+    {
+     "id": 100740062380381,
+     "created_at": "2026-09-28T18:05:49+01:00",
+     "position": 5,
+     "updated_at": "2026-09-28T18:05:53+01:00",
+     "product_id": 16595564233053,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/8AF8A93B-EB03-4CA3-AADF-35799F1B4979.jpg?v=1790615153",
+     "width": 3024,
+     "height": 4032
+    },
+    {
+     "id": 100726179725661,
+     "created_at": "2026-09-28T00:13:21+01:00",
+     "position": 6,
+     "updated_at": "2026-09-28T00:13:25+01:00",
+     "product_id": 16595564233053,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/IMG_2678.jpg?v=1790550805",
+     "width": 4000,
+     "height": 6000
+    },
+    {
+     "id": 100726179594589,
+     "created_at": "2026-09-28T00:13:21+01:00",
+     "position": 7,
+     "updated_at": "2026-09-28T00:13:24+01:00",
+     "product_id": 16595564233053,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/IMG_2675_5d034e7f-d972-408e-889a-9645414cb234.jpg?v=1790550804",
+     "width": 4000,
+     "height": 6000
+    }
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1,
+     "values": [
+      "S",
+      "M",
+      "L"
+     ]
+    }
+   ]
+  },
+  {
+   "id": 16595560399197,
+   "title": "Cherry Zip-up",
+   "handle": "cherry-zip-up",
+   "body_html": "<p style=\"text-align: center;\">Crafted from a 400GSM soft cotton blend fabric, the Cherry Zip-up is cut &amp; sewn to our unique measurements &amp; style featuring a relaxed boxy fit. A staple in every wardrobe.</p>\n<p style=\"text-align: center;\"><strong>Model is 5\"10 wearing size M</strong></p>",
+   "published_at": "2026-09-28T00:14:41+01:00",
+   "created_at": "2026-09-28T00:14:40+01:00",
+   "updated_at": "2026-11-21T21:57:54+00:00",
+   "vendor": "madebyscu",
+   "product_type": "ZIP-UP",
+   "tags": [],
+   "variants": [
+    {
+     "id": 66062716305757,
+     "title": "S",
+     "option1": "S",
+     "option2": null,
+     "option3": null,
+     "sku": "CHRYZIPUPS",
+     "requires_shipping": true,
+     "taxable": false,
+     "featured_image": null,
+     "available": true,
+     "price": "64.95",
+     "grams": 800,
+     "compare_at_price": null,
+     "position": 1,
+     "product_id": 16595560399197,
+     "created_at": "2026-09-28T01:10:04+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    },
+    {
+     "id": 66062716338525,
+     "title": "M",
+     "option1": "M",
+     "option2": null,
+     "option3": null,
+     "sku": "CHRYZIPUPM",
+     "requires_shipping": true,
+     "taxable": false,
+     "featured_image": null,
+     "available": true,
+     "price": "64.95",
+     "grams": 800,
+     "compare_at_price": null,
+     "position": 2,
+     "product_id": 16595560399197,
+     "created_at": "2026-09-28T01:10:04+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    },
+    {
+     "id": 66062716371293,
+     "title": "L",
+     "option1": "L",
+     "option2": null,
+     "option3": null,
+     "sku": "CHRYZIPUPL",
+     "requires_shipping": true,
+     "taxable": false,
+     "featured_image": null,
+     "available": true,
+     "price": "64.95",
+     "grams": 800,
+     "compare_at_price": null,
+     "position": 3,
+     "product_id": 16595560399197,
+     "created_at": "2026-09-28T01:10:04+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    }
+   ],
+   "images": [
+    {
+     "id": 100740053238109,
+     "created_at": "2026-09-28T18:05:04+01:00",
+     "position": 1,
+     "updated_at": "2026-09-28T18:05:07+01:00",
+     "product_id": 16595560399197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/E5E66579-044B-4765-8C9B-9E69EAAC1B28.png?v=1790615107",
+     "width": 1800,
+     "height": 2400
+    },
+    {
+     "id": 100740053205341,
+     "created_at": "2026-09-28T18:05:04+01:00",
+     "position": 2,
+     "updated_at": "2026-09-28T18:05:07+01:00",
+     "product_id": 16595560399197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/FDEF536D-228E-4968-93AD-38D9B70BCD73.png?v=1790615107",
+     "width": 1800,
+     "height": 2400
+    },
+    {
+     "id": 100740053172573,
+     "created_at": "2026-09-28T18:05:04+01:00",
+     "position": 3,
+     "updated_at": "2026-09-28T18:05:07+01:00",
+     "product_id": 16595560399197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/9F0132B5-5977-4F38-B8FC-01242A3F0A6D.png?v=1790615107",
+     "width": 1800,
+     "height": 2400
+    },
+    {
+     "id": 100740062347613,
+     "created_at": "2026-09-28T18:05:49+01:00",
+     "position": 4,
+     "updated_at": "2026-09-28T18:05:53+01:00",
+     "product_id": 16595560399197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/CF46B18F-E8A5-4C4B-83BC-B463536CD7F7.jpg?v=1790615153",
+     "width": 3024,
+     "height": 4032
+    },
+    {
+     "id": 100740062380381,
+     "created_at": "2026-09-28T18:05:49+01:00",
+     "position": 5,
+     "updated_at": "2026-09-28T18:05:53+01:00",
+     "product_id": 16595560399197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/8AF8A93B-EB03-4CA3-AADF-35799F1B4979.jpg?v=1790615153",
+     "width": 3024,
+     "height": 4032
+    },
+    {
+     "id": 100740062314845,
+     "created_at": "2026-09-28T18:05:49+01:00",
+     "position": 6,
+     "updated_at": "2026-09-28T18:05:53+01:00",
+     "product_id": 16595560399197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/BB735663-F297-46B0-9D3A-8D48454B6B6D.jpg?v=1790615153",
+     "width": 3024,
+     "height": 4032
+    },
+    {
+     "id": 100726179725661,
+     "created_at": "2026-09-28T00:13:21+01:00",
+     "position": 7,
+     "updated_at": "2026-09-28T00:13:25+01:00",
+     "product_id": 16595560399197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/IMG_2678.jpg?v=1790550805",
+     "width": 4000,
+     "height": 6000
+    },
+    {
+     "id": 100726179791197,
+     "created_at": "2026-09-28T00:13:21+01:00",
+     "position": 8,
+     "updated_at": "2026-09-28T00:13:25+01:00",
+     "product_id": 16595560399197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/IMG_2671_0d1bb7a3-832a-4dbe-abba-8d5fade433b1.jpg?v=1790550805",
+     "width": 4000,
+     "height": 6000
+    }
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1,
+     "values": [
+      "S",
+      "M",
+      "L"
+     ]
+    }
+   ]
+  },
+  {
+   "id": 16263906132317,
+   "title": "PANEL DENIM",
+   "handle": "panel-denim",
+   "body_html": "<p style=\"text-align: center;\">Constructed from a 15oz 100% heavyweight cotton fabric, our Panel Denim are cut &amp; sewn to our unique measurements &amp; style. They feature a signature baggy fit with a tapered bottom</p>",
+   "published_at": "2026-06-18T12:22:25+01:00",
+   "created_at": "2026-06-17T11:56:58+01:00",
+   "updated_at": "2026-11-21T21:57:54+00:00",
+   "vendor": "madebyscu",
+   "product_type": "",
+   "tags": [],
+   "variants": [
+    {
+     "id": 65004301156701,
+     "title": "S",
+     "option1": "S",
+     "option2": null,
+     "option3": null,
+     "sku": "PDENIM-S",
+     "requires_shipping": true,
+     "taxable": true,
+     "featured_image": null,
+     "available": false,
+     "price": "80.95",
+     "grams": 1100,
+     "compare_at_price": null,
+     "position": 1,
+     "product_id": 16263906132317,
+     "created_at": "2026-06-18T12:22:01+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    },
+    {
+     "id": 65004301189469,
+     "title": "M",
+     "option1": "M",
+     "option2": null,
+     "option3": null,
+     "sku": "PDENIM-M",
+     "requires_shipping": true,
+     "taxable": true,
+     "featured_image": null,
+     "available": false,
+     "price": "80.95",
+     "grams": 1100,
+     "compare_at_price": null,
+     "position": 2,
+     "product_id": 16263906132317,
+     "created_at": "2026-06-18T12:22:01+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    },
+    {
+     "id": 65004301222237,
+     "title": "L",
+     "option1": "L",
+     "option2": null,
+     "option3": null,
+     "sku": "PDENIM-L",
+     "requires_shipping": true,
+     "taxable": true,
+     "featured_image": null,
+     "available": false,
+     "price": "80.95",
+     "grams": 1100,
+     "compare_at_price": null,
+     "position": 3,
+     "product_id": 16263906132317,
+     "created_at": "2026-06-18T12:22:01+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    },
+    {
+     "id": 65004301255005,
+     "title": "XL",
+     "option1": "XL",
+     "option2": null,
+     "option3": null,
+     "sku": "PDENIM-XL",
+     "requires_shipping": true,
+     "taxable": true,
+     "featured_image": null,
+     "available": false,
+     "price": "80.95",
+     "grams": 1100,
+     "compare_at_price": null,
+     "position": 4,
+     "product_id": 16263906132317,
+     "created_at": "2026-06-18T12:22:01+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    }
+   ],
+   "images": [
+    {
+     "id": 86805317681501,
+     "created_at": "2026-07-29T16:30:06+01:00",
+     "position": 1,
+     "updated_at": "2026-07-29T16:30:11+01:00",
+     "product_id": 16263906132317,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/full_front-Photoroom.png?v=1785339011",
+     "width": 1800,
+     "height": 2400
+    },
+    {
+     "id": 84114244862301,
+     "created_at": "2026-06-17T11:54:57+01:00",
+     "position": 2,
+     "updated_at": "2026-06-17T11:55:03+01:00",
+     "product_id": 16263906132317,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/image_9.png?v=1781693703",
+     "width": 4076,
+     "height": 5436
+    },
+    {
+     "id": 84114244763997,
+     "created_at": "2026-06-17T11:54:57+01:00",
+     "position": 3,
+     "updated_at": "2026-06-17T11:55:03+01:00",
+     "product_id": 16263906132317,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/image_6.png?v=1781693703",
+     "width": 4076,
+     "height": 5436
+    },
+    {
+     "id": 84114244731229,
+     "created_at": "2026-06-17T11:54:57+01:00",
+     "position": 4,
+     "updated_at": "2026-06-17T11:55:04+01:00",
+     "product_id": 16263906132317,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/image_5.png?v=1781693704",
+     "width": 4076,
+     "height": 5436
+    },
+    {
+     "id": 84114244698461,
+     "created_at": "2026-06-17T11:54:57+01:00",
+     "position": 5,
+     "updated_at": "2026-06-17T11:55:03+01:00",
+     "product_id": 16263906132317,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/image_4.png?v=1781693703",
+     "width": 4076,
+     "height": 5436
+    },
+    {
+     "id": 84114244796765,
+     "created_at": "2026-06-17T11:54:57+01:00",
+     "position": 6,
+     "updated_at": "2026-06-17T11:55:03+01:00",
+     "product_id": 16263906132317,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/image_7.png?v=1781693703",
+     "width": 4076,
+     "height": 5436
+    },
+    {
+     "id": 84114244829533,
+     "created_at": "2026-06-17T11:54:57+01:00",
+     "position": 7,
+     "updated_at": "2026-06-17T11:55:03+01:00",
+     "product_id": 16263906132317,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/image_8.png?v=1781693703",
+     "width": 4076,
+     "height": 5436
+    }
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1,
+     "values": [
+      "S",
+      "M",
+      "L",
+      "XL"
+     ]
+    }
+   ]
+  },
+  {
+   "id": 9110776381789,
+   "title": "V1 Sweats",
+   "handle": "basics-v1-straight-leg-sweatpants",
+   "body_html": "<p style=\"text-align: center;\"><strong>┃OLD BRAND PRODUCT ┃</strong></p>\n<p style=\"text-align: center;\"><span>AS WE HAVE REBRANDED, OLD LOGO STOCK IS NOW UP FOR CLEARANCE SALE</span></p>\n<p style=\"text-align: center;\"><span>PRODUCTS ARE IN NEW PERFECTLY NORMAL CONDITION</span></p>",
+   "published_at": "2024-04-07T23:12:12+01:00",
+   "created_at": "2024-04-07T23:12:12+01:00",
+   "updated_at": "2026-11-21T21:57:54+00:00",
+   "vendor": "BASICS COLLECTION",
+   "product_type": "SWEATPANTS",
+   "tags": [],
+   "variants": [
+    {
+     "id": 50614762570077,
+     "title": "S / Black",
+     "option1": "S",
+     "option2": "Black",
+     "option3": null,
+     "sku": "PRJTLJOSWEAT-BLACKS",
+     "requires_shipping": true,
+     "taxable": false,
+     "featured_image": null,
+     "available": false,
+     "price": "43.95",
+     "grams": 800,
+     "compare_at_price": null,
+     "position": 2,
+     "product_id": 9110776381789,
+     "created_at": "2024-04-07T23:12:12+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    },
+    {
+     "id": 50614762602845,
+     "title": "M / Black",
+     "option1": "M",
+     "option2": "Black",
+     "option3": null,
+     "sku": "PRJTLJOSWEAT-BLACKM",
+     "requires_shipping": true,
+     "taxable": false,
+     "featured_image": null,
+     "available": false,
+     "price": "43.95",
+     "grams": 800,
+     "compare_at_price": null,
+     "position": 3,
+     "product_id": 9110776381789,
+     "created_at": "2024-04-07T23:12:12+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    },
+    {
+     "id": 50614762635613,
+     "title": "L / Black",
+     "option1": "L",
+     "option2": "Black",
+     "option3": null,
+     "sku": "PRJTLJOSWEAT-BLACKL",
+     "requires_shipping": true,
+     "taxable": false,
+     "featured_image": null,
+     "available": false,
+     "price": "43.95",
+     "grams": 800,
+     "compare_at_price": null,
+     "position": 4,
+     "product_id": 9110776381789,
+     "created_at": "2024-04-07T23:12:12+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    }
+   ],
+   "images": [
+    {
+     "id": 80175384166749,
+     "created_at": "2025-11-14T15:17:33+00:00",
+     "position": 1,
+     "updated_at": "2025-11-14T15:18:08+00:00",
+     "product_id": 9110776381789,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/rebrand_logo_84.png?v=1763133488",
+     "width": 1375,
+     "height": 1375
+    },
+    {
+     "id": 79369963766109,
+     "created_at": "2025-10-07T11:52:25+01:00",
+     "position": 2,
+     "updated_at": "2025-11-14T15:18:08+00:00",
+     "product_id": 9110776381789,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/IMG_3896-Photoroom.png?v=1763133488",
+     "width": 960,
+     "height": 1280
+    },
+    {
+     "id": 79369961046365,
+     "created_at": "2025-10-07T11:52:18+01:00",
+     "position": 3,
+     "updated_at": "2025-11-14T15:18:08+00:00",
+     "product_id": 9110776381789,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/IMG_3892-Photoroom.png?v=1763133488",
+     "width": 960,
+     "height": 1280
+    },
+    {
+     "id": 80175334588765,
+     "created_at": "2025-11-14T15:13:42+00:00",
+     "position": 4,
+     "updated_at": "2025-11-14T15:18:08+00:00",
+     "product_id": 9110776381789,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/rebrand_logo_81.png?v=1763133488",
+     "width": 1375,
+     "height": 1375
+    },
+    {
+     "id": 79370389455197,
+     "created_at": "2025-10-07T12:06:23+01:00",
+     "position": 5,
+     "updated_at": "2025-11-14T15:18:08+00:00",
+     "product_id": 9110776381789,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/IMG_3894.jpg?v=1763133488",
+     "width": 3024,
+     "height": 4032
+    },
+    {
+     "id": 79369970581853,
+     "created_at": "2025-10-07T11:52:47+01:00",
+     "position": 6,
+     "updated_at": "2025-11-14T15:18:08+00:00",
+     "product_id": 9110776381789,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/IMG_3888-Photoroom_1.png?v=1763133488",
+     "width": 960,
+     "height": 1280
+    },
+    {
+     "id": 79379202376029,
+     "created_at": "2025-10-07T18:22:27+01:00",
+     "position": 7,
+     "updated_at": "2025-11-14T15:18:08+00:00",
+     "product_id": 9110776381789,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/adsposts_6.png?v=1763133488",
+     "width": 1080,
+     "height": 1350
+    },
+    {
+     "id": 79379206046045,
+     "created_at": "2025-10-07T18:22:38+01:00",
+     "position": 8,
+     "updated_at": "2025-11-14T15:18:08+00:00",
+     "product_id": 9110776381789,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/adsposts_7_127e81d3-31f1-4ac9-9afc-623ab62bd9dd.png?v=1763133488",
+     "width": 1080,
+     "height": 1350
+    },
+    {
+     "id": 79379203424605,
+     "created_at": "2025-10-07T18:22:29+01:00",
+     "position": 9,
+     "updated_at": "2025-11-14T15:18:08+00:00",
+     "product_id": 9110776381789,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/adsposts_8.png?v=1763133488",
+     "width": 1080,
+     "height": 1350
+    }
+   ],
+   "options": [
+    {
+     "name": "SIZE",
+     "position": 1,
+     "values": [
+      "S",
+      "M",
+      "L"
+     ]
+    },
+    {
+     "name": "Colour",
+     "position": 2,
+     "values": [
+      "Black"
+     ]
+    }
+   ]
+  },
+  {
+   "id": 8616708047197,
+   "title": "V1 Hoodie",
+   "handle": "basics-v1-hoodie",
+   "body_html": "<p style=\"text-align: center;\"><strong>┃OLD BRAND PRODUCT ┃</strong></p>\n<p style=\"text-align: center;\"><span>AS WE HAVE REBRANDED, OLD LOGO STOCK IS NOW UP FOR CLEARANCE SALE</span></p>\n<p style=\"text-align: center;\"><span>PRODUCTS ARE IN NEW PERFECTLY NORMAL CONDITION</span></p>",
+   "published_at": "2023-09-20T23:10:37+01:00",
+   "created_at": "2023-09-20T23:10:37+01:00",
+   "updated_at": "2026-11-21T21:57:54+00:00",
+   "vendor": "BASICS COLLECTION",
+   "product_type": "HOODIE",
+   "tags": [],
+   "variants": [
+    {
+     "id": 50614761750877,
+     "title": "S / Black",
+     "option1": "S",
+     "option2": "Black",
+     "option3": null,
+     "sku": "PRJTLJOHOOD-BLACKS",
+     "requires_shipping": true,
+     "taxable": false,
+     "featured_image": null,
+     "available": false,
+     "price": "43.95",
+     "grams": 800,
+     "compare_at_price": null,
+     "position": 2,
+     "product_id": 8616708047197,
+     "created_at": "2024-04-07T23:11:36+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    },
+    {
+     "id": 50614761783645,
+     "title": "M / Black",
+     "option1": "M",
+     "option2": "Black",
+     "option3": null,
+     "sku": "PRJTLJOHOOD-BLACKM",
+     "requires_shipping": true,
+     "taxable": false,
+     "featured_image": null,
+     "available": false,
+     "price": "43.95",
+     "grams": 800,
+     "compare_at_price": null,
+     "position": 3,
+     "product_id": 8616708047197,
+     "created_at": "2024-04-07T23:11:36+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    },
+    {
+     "id": 50614761816413,
+     "title": "L / Black",
+     "option1": "L",
+     "option2": "Black",
+     "option3": null,
+     "sku": "PRJTLJOHOOD-BLACKL",
+     "requires_shipping": true,
+     "taxable": false,
+     "featured_image": null,
+     "available": true,
+     "price": "43.95",
+     "grams": 800,
+     "compare_at_price": null,
+     "position": 4,
+     "product_id": 8616708047197,
+     "created_at": "2024-04-07T23:11:36+01:00",
+     "updated_at": "2026-11-21T21:57:54+00:00"
+    }
+   ],
+   "images": [
+    {
+     "id": 80175091089757,
+     "created_at": "2025-11-14T14:59:44+00:00",
+     "position": 1,
+     "updated_at": "2025-11-14T14:59:59+00:00",
+     "product_id": 8616708047197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/rebrand_logo_76.png?v=1763132399",
+     "width": 1375,
+     "height": 1375
+    },
+    {
+     "id": 80175090631005,
+     "created_at": "2025-11-14T14:59:41+00:00",
+     "position": 2,
+     "updated_at": "2025-11-14T14:59:59+00:00",
+     "product_id": 8616708047197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/rebrand_logo_78.png?v=1763132399",
+     "width": 1375,
+     "height": 1375
+    },
+    {
+     "id": 80175089975645,
+     "created_at": "2025-11-14T14:59:39+00:00",
+     "position": 3,
+     "updated_at": "2025-11-14T14:59:59+00:00",
+     "product_id": 8616708047197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/rebrand_logo_79.png?v=1763132399",
+     "width": 1375,
+     "height": 1375
+    },
+    {
+     "id": 80175334293853,
+     "created_at": "2025-11-14T15:13:40+00:00",
+     "position": 4,
+     "updated_at": "2025-11-14T15:41:48+00:00",
+     "product_id": 8616708047197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/rebrand_logo_82.png?v=1763134908",
+     "width": 1375,
+     "height": 1375
+    },
+    {
+     "id": 80175091056989,
+     "created_at": "2025-11-14T14:59:43+00:00",
+     "position": 5,
+     "updated_at": "2025-11-14T15:41:48+00:00",
+     "product_id": 8616708047197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/rebrand_logo_77.png?v=1763134908",
+     "width": 1375,
+     "height": 1375
+    },
+    {
+     "id": 79369646604637,
+     "created_at": "2025-10-07T11:33:14+01:00",
+     "position": 6,
+     "updated_at": "2025-11-14T15:41:48+00:00",
+     "product_id": 8616708047197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/IMG_3888-Photoroom.png?v=1763134908",
+     "width": 960,
+     "height": 1280
+    },
+    {
+     "id": 79379266077021,
+     "created_at": "2025-10-07T18:25:02+01:00",
+     "position": 7,
+     "updated_at": "2025-11-14T15:41:48+00:00",
+     "product_id": 8616708047197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/adsposts_6_a368e050-6751-4741-aad8-06b567bc933d.png?v=1763134908",
+     "width": 1080,
+     "height": 1350
+    },
+    {
+     "id": 79379266863453,
+     "created_at": "2025-10-07T18:25:05+01:00",
+     "position": 8,
+     "updated_at": "2025-11-14T15:41:48+00:00",
+     "product_id": 8616708047197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/adsposts_7_b2a52e61-8edd-4a11-8f6b-6cf7bbe5add0.png?v=1763134908",
+     "width": 1080,
+     "height": 1350
+    },
+    {
+     "id": 79379268239709,
+     "created_at": "2025-10-07T18:25:09+01:00",
+     "position": 9,
+     "updated_at": "2025-11-14T15:41:48+00:00",
+     "product_id": 8616708047197,
+     "variant_ids": [],
+     "src": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/adsposts_8_0216c034-3e9e-4f6a-9dbf-2257965bd126.png?v=1763134908",
+     "width": 1080,
+     "height": 1350
+    }
+   ],
+   "options": [
+    {
+     "name": "SIZE",
+     "position": 1,
+     "values": [
+      "S",
+      "M",
+      "L"
+     ]
+    },
+    {
+     "name": "COLOUR",
+     "position": 2,
+     "values": [
+      "Black"
+     ]
+    }
+   ]
+  }
+ ]
+}

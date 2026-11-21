@@ -1,0 +1,49 @@
+{
+ "_aide": "Reglages et textes du site. Apres modif : python outils/build.py",
+ "name": "madebyscu",
+ "description": "The official website. Shop madebyscu. Subscribe to the newsletter for the latest update on our drops. Based in the UK.",
+ "base_path": "/",
+ "site_url": "",
+ "shopify_domain": "madebyscu.com",
+ "email": "info@madebyscu.com",
+ "currency": {"symbol": "€", "code": "EUR", "decimal": ","},
+ "logo": "//madebyscu.com/cdn/shop/files/denim_details_30.png?v=1781732004",
+ "favicon": "//madebyscu.com/cdn/shop/files/denim_details_28.png?v=1779040215",
+ "announcement": "FREE SHIPPING ON DOMESTIC ORDERS OVER £120",
+ "menu": [
+  {"label": "Home", "href": "index.html"},
+  {"label": "Shop", "href": "pages/catalog.html"},
+  {"label": "Contact", "href": "pages/contact.html"}
+ ],
+ "footer": [
+  {"label": "Refund policy", "href": "policies/refund-policy.html"},
+  {"label": "Privacy policy", "href": "policies/privacy-policy.html"},
+  {"label": "Terms of service", "href": "policies/terms-of-service.html"},
+  {"label": "Shipping policy", "href": "policies/shipping-policy.html"},
+  {"label": "Contact information", "href": "policies/contact-information.html"}
+ ],
+ "shipping_html": "<p>Orders are fulfilled &amp; shipped within 48h</p><p>UK: 2 - 4 working days<br>EUROPE: 2 - 10 working days<br>ROW: 2 - 14 working days</p><p>All orders are shipped with a tracking service which you will receive once your order is fulfilled</p><p><strong>*ORDERS OUTSIDE OF THE UK MAY BE SUBJECT TO CUSTOM FEES / TAXES WHICH ARE TO BE PAID BY CUSTOMERS*</strong></p>",
+ "home": {
+  "hero": {
+   "image": "//madebyscu.com/cdn/shop/files/IMG_2594.jpg?v=1790549682",
+   "title": "Cherry tracksuit out now",
+   "button": "Shop now",
+   "link": "collections/cherry.html"
+  },
+  "featured_collection": "cherry",
+  "shop_all": {"title": "Shop all products below", "button": "Shop all", "link": "collections/all.html"},
+  "lookbook": {
+   "title": "Cherry zip-up + sweats lookbook",
+   "images": [
+    "//madebyscu.com/cdn/shop/files/IMG_2663.jpg?v=1790549879",
+    "//madebyscu.com/cdn/shop/files/IMG_2671.jpg?v=1790549879",
+    "//madebyscu.com/cdn/shop/files/IMG_2675.jpg?v=1790549879",
+    "//madebyscu.com/cdn/shop/files/IMG_2714.jpg?v=1790549878",
+    "//madebyscu.com/cdn/shop/files/IMG_2425.jpg?v=1790549879",
+    "//madebyscu.com/cdn/shop/files/IMG_2594_23dd920e-df19-40c6-bfaf-31b13db0f0de.jpg?v=1790549880",
+    "//madebyscu.com/cdn/shop/files/IMG_2334.jpg?v=1790550099"
+   ]
+  },
+  "newsletter": {"title": "Don't miss out", "text": "Join our email list below", "thanks": "Thanks for subscribing"}
+ }
+}
