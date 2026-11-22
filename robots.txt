@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sekkaouimoez-a11y.github.io/madebyscu/sitemap.xml
