@@ -91,4 +91,4 @@ GitHub Pages republie le site en quelques minutes.
 
 ## Crédits
 
-Police Archivo Narrow : licence SIL Open Font License (`assets/fonts/OFL.txt`).
+Polices Archivo (variable, largeur 62–125) et Geist Mono : licence SIL Open Font License (`assets/fonts/OFL-Archivo.txt`, `assets/fonts/OFL-GeistMono.txt`). Logo vectorisé depuis le PNG d'origine : `assets/img/logo.svg`.
