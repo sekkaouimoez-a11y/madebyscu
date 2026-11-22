@@ -15,6 +15,8 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 IMG = ROOT / "assets" / "img"
 COOKIE = "localization=FR; cart_currency=EUR"  # cookies de pays : memes prix en euros que la page ?country=FR
+# largeurs de telechargement (build.py s'en sert pour les srcset) ; "-600" = petite version pour telephones et vignettes
+PRODUCT_W, LOOKBOOK_W, SMALL_W, SMALL = 1200, 900, 600, "-600"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
 
 
@@ -78,10 +80,12 @@ def images_wanted():
     yield site["home"]["hero"]["image"], 2400
     yield site["home"]["hero"]["image"], 900, "-900"  # version telephone
     for u in site["home"]["lookbook"]["images"]:
-        yield u, 900
+        yield u, LOOKBOOK_W
+        yield u, SMALL_W, SMALL
     for p in products:
         for i in p["images"]:
-            yield i["src"], 1200
+            yield i["src"], PRODUCT_W
+            yield i["src"], SMALL_W, SMALL
     for extra in content["products"].values():
         if extra.get("size_guide"):
             yield extra["size_guide"], 1400

@@ -38,6 +38,14 @@ Puis :
 python outils/build.py
 ```
 
+## Apparence et mouvement
+
+- **Jetons** (couleurs, polices, tailles, espaces, courbes et durées) : en tête de `assets/css/style.css`, dans `:root`. Changer une valeur là change tout le site.
+- **Couleur d'accent** : noire par défaut. Une collection peut avoir la sienne dans `data/site.json` → `collection_accents` (ex. `"cherry": "#7a0a22"`). `build.py` la pose sur les pages de cette collection, sur ses fiches produits et sur l'accueil si elle est mise en avant (`home.featured_collection`). Elle ne sert qu'à « OUT NOW » et à quelques détails (fil d'Ariane, sélection de texte). Pour un nouveau drop : ajouter sa couleur, changer `featured_collection`, puis `python outils/build.py`.
+- **Gros plans de l'accueil** (« The details ») : `data/site.json` → `home.details`. Chaque gros plan = une photo d'un produit + un de ses détails de `data/content.json` (`build.py` vérifie que les deux existent).
+- **Mouvement** : tout est dans `assets/css/style.css`, bloc `MOUVEMENT` (sous `prefers-reduced-motion: no-preference`). Avec « réduire les animations » dans le système, tout est visible tout de suite et immobile ; sans JavaScript, rien ne reste caché.
+- **Couper un effet** : supprimer (ou commenter) sa ligne dans ce bloc, par exemple `.shop-all__title` (glissement de « Shop all »), `.hero__zoom` (zoom de la photo d'ouverture), `.footer__mark-inner` (logo du pied qui monte), `.ticker__track` (bandeau qui défile), `[data-reveal="curtain"]` (rideaux des photos). Le lookbook épinglé se coupe dans `assets/js/site.js` (`canPin`) : il redevient un carrousel, comme sur téléphone.
+
 ## Rester synchronisé avec Shopify
 
 Pour récupérer les derniers produits, prix et stocks de la boutique et télécharger les nouvelles photos :
@@ -50,6 +58,7 @@ python outils/sync.py
 python outils/build.py
 ```
 
+Chaque photo produit et du lookbook est aussi téléchargée en 600 px (suffixe `-600`) : `build.py` s'en sert pour les `srcset` (téléphones, vignettes).  
 (`python outils/sync.py --images` ne télécharge que les images manquantes, sans toucher aux produits ; `--force` retélécharge aussi les photos remplacées sous le même nom. La synchro refuse d'écrire si la boutique ne répond pas en euros.)  
 Un nouveau produit doit aussi être ajouté à sa collection dans `data/content.json` (et, si besoin, ses puces « Product Details » et son guide des tailles).
 
@@ -91,4 +100,8 @@ GitHub Pages republie le site en quelques minutes.
 
 ## Crédits
 
-Polices Archivo (variable, largeur 62–125) et Geist Mono : licence SIL Open Font License (`assets/fonts/OFL-Archivo.txt`, `assets/fonts/OFL-GeistMono.txt`). Logo vectorisé depuis le PNG d'origine : `assets/img/logo.svg`.
+Polices, toutes deux sous licence SIL Open Font License 1.1 et hébergées sur le site :
+- **Archivo** (variable, largeur 62–125 %, graisse 100–900), © The Archivo Project Authors (Omnibus-Type) : `assets/fonts/archivo-var.woff2`, licence `assets/fonts/OFL-Archivo.txt` ;
+- **Geist Mono** (variable), © The Geist Project Authors (Vercel) : `assets/fonts/geist-mono-var.woff2`, licence `assets/fonts/OFL-GeistMono.txt`.
+
+Logo vectorisé depuis le PNG d'origine : `assets/img/logo.svg` (pour un pied de page encore plus grand, il faudrait le fichier vectoriel original de la marque).

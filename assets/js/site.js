@@ -57,15 +57,10 @@
     drawer.showModal(); // <dialog> : focus garde dedans, Echap ferme, focus rendu a la fermeture
     syncLock();
   }));
-  const closeDrawer = () => {
-    if (!drawer.open || drawer.classList.contains("is-closing")) return;
-    if (calm.matches || !drawer.getAnimations) return drawer.close();
-    drawer.classList.add("is-closing"); // le tiroir ressort par la droite avant de se fermer
-    setTimeout(() => { drawer.classList.remove("is-closing"); drawer.close(); }, 340);
-  };
+  // la sortie animee est en CSS (transition de display/overlay) : on ferme simplement ; Echap ferme tout seul
+  const closeDrawer = () => drawer.close();
   $$("[data-cart-close]").forEach((el) => el.addEventListener("click", closeDrawer));
   drawer.addEventListener("click", (e) => { if (e.target === drawer) closeDrawer(); }); // clic sur le fond
-  drawer.addEventListener("cancel", (e) => { e.preventDefault(); closeDrawer(); }); // Echap
   drawer.addEventListener("close", syncLock);
 
   // ---------- message bref ----------
@@ -78,6 +73,12 @@
     toastTimer = setTimeout(() => toastEl.classList.remove("is-visible"), 2500);
   };
 
+  // fin d'un defilement horizontal (glisser au doigt ou defilement doux) : plus d'evenement scroll depuis 120 ms
+  const onSettle = (el, fn) => {
+    let t;
+    el.addEventListener("scroll", () => { clearTimeout(t); t = setTimeout(fn, 120); }, { passive: true });
+  };
+
   // ---------- photos des cartes produit ----------
   const canHover = matchMedia("(hover: hover) and (pointer: fine)").matches;
   $$(".card__media").forEach((media) => {
@@ -85,13 +86,18 @@
     const n = track.children.length;
     if (n < 2) return;
     const dots = $$(".card__dots i", media);
-    const index = () => Math.round(track.scrollLeft / track.clientWidth);
-    const to = (k) => track.scrollTo({ left: ((k + n) % n) * track.clientWidth, behavior: calm.matches ? "auto" : "smooth" });
-    const mark = () => { const i = index(); dots.forEach((d, k) => d.classList.toggle("is-on", k === i)); };
-    track.addEventListener("scroll", mark, { passive: true });
+    // photo visee, gardee en memoire : un clic pendant un defilement doux part d'elle (pas de la position a mi-chemin)
+    let i = 0;
+    const mark = () => dots.forEach((d, k) => d.classList.toggle("is-on", k === i));
+    const to = (k) => {
+      i = (k + n) % n;
+      mark();
+      track.scrollTo({ left: i * track.clientWidth, behavior: calm.matches ? "auto" : "smooth" });
+    };
+    onSettle(track, () => { i = Math.round(track.scrollLeft / (track.clientWidth || 1)); mark(); }); // apres un glisser au doigt
     mark();
-    $("[data-card-prev]", media)?.addEventListener("click", () => to(index() - 1));
-    $("[data-card-next]", media)?.addEventListener("click", () => to(index() + 1));
+    $("[data-card-prev]", media)?.addEventListener("click", () => to(i - 1));
+    $("[data-card-next]", media)?.addEventListener("click", () => to(i + 1));
     if (canHover) { // comme l'original : la 2e photo au survol, retour a la 1re en sortant
       media.addEventListener("mouseenter", () => to(1));
       media.addEventListener("mouseleave", () => to(0));
@@ -104,17 +110,20 @@
     const items = [...track.children];
     const count = $("[data-gallery-index]", g);
     if (items.length < 2) return;
-    const index = () => Math.round(track.scrollLeft / (track.clientWidth || 1));
+    // telephone : la 2e et la derniere photo (fleche precedente) sont pretes avant le premier geste
+    if (matchMedia("(max-width: 899px)").matches) [items[1], items.at(-1)].forEach((li) => { $("img", li).loading = "eager"; });
+    let i = 0; // photo visee, comme pour les cartes
     const show = (k) => {
-      const i = (k + items.length) % items.length;
+      i = (k + items.length) % items.length;
+      count.textContent = i + 1;
       track.scrollTo({ left: i * track.clientWidth, behavior: calm.matches ? "auto" : "smooth" });
     };
-    track.addEventListener("scroll", () => { count.textContent = index() + 1; }, { passive: true });
-    $("[data-prev]", g).addEventListener("click", () => show(index() - 1));
-    $("[data-next]", g).addEventListener("click", () => show(index() + 1));
+    onSettle(track, () => { i = Math.round(track.scrollLeft / (track.clientWidth || 1)); count.textContent = i + 1; });
+    $("[data-prev]", g).addEventListener("click", () => show(i - 1));
+    $("[data-next]", g).addEventListener("click", () => show(i + 1));
     g.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft") show(index() - 1);
-      if (e.key === "ArrowRight") show(index() + 1);
+      if (e.key === "ArrowLeft") show(i - 1);
+      if (e.key === "ArrowRight") show(i + 1);
     });
   });
 
@@ -140,6 +149,7 @@
     const variants = JSON.parse($("[data-variants]", form).textContent);
     const btn = $("[data-add-to-cart]", form);
     const groups = $$(".options", form);
+    const anyLeft = variants.some((v) => v.available); // produit entierement epuise : tailles laissees visibles, bouton « Sold out »
     const selected = () => groups.map((fs) => $("input:checked", fs)?.value ?? null);
     const update = () => {
       const sel = selected();
@@ -148,6 +158,7 @@
         const input = $("input", label);
         const ok = variants.some((v) => v.available && v.options[k] === input.value && v.options.every((o, j) => j === k || o === sel[j]));
         label.classList.toggle("is-unavailable", !ok);
+        input.disabled = !ok && anyLeft;
         input.setAttribute("aria-label", ok ? input.value : `${input.value} – sold out`);
       }));
       const v = variants.find((v) => v.options.every((o, j) => o === sel[j]));
@@ -174,13 +185,20 @@
     const pin = $(".lookbook__pin", section);
     const track = $("[data-lookbook]", section);
     const thumb = $("[data-lookbook-thumb]", section);
+    let speed = 1; // px de bande par px de defilement
     const layout = () => {
       section.classList.toggle("is-pinned", canPin());
       if (section.classList.contains("is-pinned")) {
-        section.style.setProperty("--dist", `${Math.max(0, rail.scrollWidth - pin.clientWidth)}px`);
+        // epinglage plafonne a 1,25 hauteur d'ecran : au-dela, la bande avance plus vite que la page
+        const dist = Math.max(0, rail.scrollWidth - pin.clientWidth);
+        const run = Math.min(dist, Math.round(innerHeight * 1.25));
+        speed = run ? dist / run : 1;
+        section.style.setProperty("--dist", `${dist}px`);
+        section.style.setProperty("--pin", `${run}px`);
         thumb.style.cssText = "";
       } else {
         section.style.removeProperty("--dist");
+        section.style.removeProperty("--pin");
         sync();
       }
     };
@@ -210,7 +228,7 @@
     track.addEventListener("pointercancel", end);
     track.addEventListener("keydown", (e) => {
       if (section.classList.contains("is-pinned")) { // bande epinglee : les fleches font defiler la page
-        const step = (track.firstElementChild?.offsetWidth || 300) + 40;
+        const step = ((track.firstElementChild?.offsetWidth || 300) + 40) / speed;
         if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); scrollBy({ top: e.key === "ArrowRight" ? step : -step, behavior: calm.matches ? "auto" : "smooth" }); }
         return;
       }
@@ -234,7 +252,7 @@
   // ---------- apparitions au defilement (une seule fois) ----------
   // ce qui est deja a l'ecran au chargement n'est jamais cache (animation CSS directe) ;
   // le reste est « arme » puis revele quand il entre dans la fenetre
-  $$(".grid, .lookbook__track").forEach((g) => [...g.children].forEach((c, k) => c.style.setProperty("--i", k % 4)));
+  $$(".grid, .lookbook__track, .closeups__grid").forEach((g) => [...g.children].forEach((c, k) => c.style.setProperty("--i", k % 4)));
   if ("IntersectionObserver" in window && !calm.matches) {
     const io = new IntersectionObserver((entries) => entries.forEach((e) => {
       if (!e.isIntersecting) return;
@@ -261,5 +279,21 @@
   // retour arriere restaure depuis le cache : on retire le nom pose au clic
   addEventListener("pageshow", (e) => {
     if (e.persisted) $$(".card__track img").forEach((im) => { im.style.viewTransitionName = ""; });
+  });
+  // retour depuis une fiche : sa photo revient dans sa carte (morph inverse)
+  addEventListener("pagereveal", (e) => {
+    const from = e.viewTransition && window.navigation?.activation?.from?.url;
+    if (!from) return;
+    const file = new URL(from).pathname.split("/").pop();
+    const link = $$(".card__name a").find((a) => a.pathname.endsWith(`/products/${file}`));
+    if (!link) return;
+    const img = $("[data-card-track] img", link.closest(".card"));
+    const named = $$("[data-vt]"); // un seul element par nom, sinon le navigateur annule la transition
+    named.forEach((el) => { el.style.viewTransitionName = "none"; });
+    img.style.viewTransitionName = "product";
+    e.viewTransition.finished.finally(() => {
+      img.style.viewTransitionName = "";
+      named.forEach((el) => { el.style.viewTransitionName = ""; });
+    });
   });
 })();

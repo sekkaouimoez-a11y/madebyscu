@@ -8,7 +8,7 @@ import datetime, hashlib, html, json, re, sys, textwrap
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from sync import IMG, local_file  # meme nommage des images que le telechargement
+from sync import IMG, local_file, cdn, PRODUCT_W, LOOKBOOK_W, SMALL_W, SMALL  # meme nommage des images que le telechargement
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -41,6 +41,43 @@ def img_path(url, suffix=""):
     if not found:
         raise SystemExit(f"Image manquante : {url}\n-> lance d'abord : python outils/sync.py --images")
     return "assets/img/" + found.name
+
+
+def srcset(url, big_w, sizes):
+    """srcset : version 600 px + grande version (toutes deux telechargees par sync.py), avec sizes."""
+    if big_w <= SMALL_W or not local_file(url, SMALL):
+        return ""
+    return f' srcset="@/{img_path(url, SMALL)} {SMALL_W}w, @/{img_path(url)} {big_w}w" sizes="{sizes}"'
+
+
+def img_dims(url):
+    """' width=".." height=".."' lus dans l'en-tete du WebP telecharge (sans dimensions, l'image fait sauter la page) ; '' si inconnu."""
+    b = (ROOT / img_path(url)).read_bytes()[:30]
+    if b[:4] != b"RIFF" or b[8:12] != b"WEBP":
+        return ""
+    kind = b[12:16]
+    if kind == b"VP8X":  # largeur-1 et hauteur-1 sur 24 bits
+        w, h = 1 + int.from_bytes(b[24:27], "little"), 1 + int.from_bytes(b[27:30], "little")
+    elif kind == b"VP8L":  # 14 bits chacune, moins 1
+        bits = int.from_bytes(b[21:25], "little")
+        w, h = (bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1
+    elif kind == b"VP8 ":
+        w, h = int.from_bytes(b[26:28], "little") & 0x3FFF, int.from_bytes(b[28:30], "little") & 0x3FFF
+    else:
+        return ""
+    return f' width="{w}" height="{h}"'
+
+
+def og_image(url):
+    """Adresse absolue de l'image de partage : celle du site s'il a une adresse, sinon le CDN Shopify."""
+    base = site["site_url"].rstrip("/")
+    return f"{base}/{img_path(url)}" if base else cdn(url) + ("&" if "?" in cdn(url) else "?") + "width=1200"
+
+
+def accent(collection):
+    """Couleur d'accent de la collection (data/site.json > collection_accents), sinon rien (noir)."""
+    a = site.get("collection_accents", {}).get(collection)
+    return f"--accent:{esc(a)}" if a else ""
 
 
 def money(price):
@@ -115,15 +152,19 @@ STAR = '<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v
 
 # ---------- gabarit commun ----------
 
-def layout(path, title, body, description=None, image=None, head_extra="", body_class=""):
-    """Page complete. `path` = chemin du fichier depuis la racine (ex. 'products/x.html')."""
+def layout(path, title, body, description=None, image=None, head_extra="", body_class="", collection=None):
+    """Page complete. `path` = chemin du fichier depuis la racine (ex. 'products/x.html').
+    `image` = URL Shopify de l'image de partage (sinon la photo d'ouverture) ; `collection` = sa couleur d'accent."""
     is404 = path == "404.html"
     # liens relatifs (marchent en local et sur GitHub Pages) ; la 404 est servie a n'importe quelle profondeur
     R = site["base_path"] if is404 else "../" * path.count("/")
     full_title = esc(site["name"] if title is None else f"{title} – {site['name']}")
     desc = esc(description or site["description"])
     abs_url = site["site_url"].rstrip("/")
-    og_img = f'\n<meta property="og:image" content="{abs_url}/{image}">' if abs_url and image else ""
+    og_img = (f'\n<meta property="og:image" content="{esc(og_image(image or site["home"]["hero"]["image"]))}">'
+              '\n<meta name="twitter:card" content="summary_large_image">')
+    style = accent(collection)
+    body_attrs = (f' class="{body_class}"' if body_class else "") + (f' style="{style}"' if style else "")
     canon = f'\n<link rel="canonical" href="{abs_url}/{"" if path == "index.html" else path}">' if abs_url and not is404 else ""
     current = lambda href: ' aria-current="page"' if href == path else ""
     menu = "".join(f'<li><a class="menu__link" href="{R}{m["href"]}"{current(m["href"])}><span class="menu__num" aria-hidden="true">{i:02d}</span><span class="menu__label">{esc(m["label"])}</span></a></li>'
@@ -149,7 +190,7 @@ def layout(path, title, body, description=None, image=None, head_extra="", body_
 <script>document.documentElement.classList.add("js")</script>
 <script src="{R}assets/js/site.js?v={VER['js/site.js']}" defer></script>{head_extra}
 </head>
-<body{f' class="{body_class}"' if body_class else ""}>
+<body{body_attrs}>
 <a class="skip-link" href="#main">Skip to content</a>
 <div class="site-head" data-head>
   <div class="announcement"><p>{esc(site['announcement'])}</p></div>
@@ -193,14 +234,14 @@ def layout(path, title, body, description=None, image=None, head_extra="", body_
 
 # ---------- morceaux ----------
 
-def card(h, heading="h3", num=None):
+def card(h, heading="h3", num=None, sizes="(max-width: 899px) 50vw, 25vw"):
     """Carte produit : jusqu'a 6 photos qui defilent (fleches au survol sur ordinateur, glisser au doigt sur mobile)."""
     p = PRODUCTS[h]
     name = esc(p["title"])
     ims = p["images"][:CARD_IMAGES]
     # 1re photo chargee tout de suite (dans une piste horizontale, le chargement differe ne part qu'a l'ecran)
     imgs = "".join(
-        f'<img src="@/{img_path(im["src"])}" alt="" width="{im["width"]}" height="{im["height"]}"'
+        f'<img src="@/{img_path(im["src"])}"{srcset(im["src"], min(PRODUCT_W, im["width"]), sizes)} alt="" width="{im["width"]}" height="{im["height"]}"'
         f'{LAZY if i else ""} decoding="async" draggable="false">'
         for i, im in enumerate(ims))
     arrows = (f'<button type="button" class="card__arrow card__arrow--prev" data-card-prev aria-label="Previous photo of {name}">{ARROW_L}</button>'
@@ -218,9 +259,23 @@ def card(h, heading="h3", num=None):
 </article>"""
 
 
+def card_sizes(kind, n, i):
+    """Largeur affichee d'une carte (attribut sizes), selon la grille ; doit suivre les regles .grid* de style.css."""
+    if kind == "featured":
+        return "(max-width: 899px) 50vw, 36vw"
+    if kind == "page" and n == 1:
+        return "(max-width: 899px) 100vw, 400px"
+    if kind == "page" and n == 2:
+        return "(max-width: 899px) 50vw, 32vw"
+    if kind == "page" and n == 5:
+        return ("(max-width: 899px) 100vw" if i == 1 else "(max-width: 899px) 50vw") + ", (max-width: 1199px) 31vw, 19vw"
+    return "(max-width: 899px) 50vw, 25vw"
+
+
 def grid(handles, extra_class="", heading="h3"):
     hs = [h for h in handles if h in PRODUCTS]
-    cards = [card(h, heading, i) for i, h in enumerate(hs, start=1)]
+    kind = extra_class.rsplit("--", 1)[-1]
+    cards = [card(h, heading, i, card_sizes(kind, len(hs), i)) for i, h in enumerate(hs, start=1)]
     return f'<div class="grid {extra_class}" data-count="{len(hs)}">\n' + "\n".join(cards) + "\n</div>"
 
 
@@ -230,15 +285,17 @@ def collection_nav(current):
         n = len([h for h in c["products"] if h in PRODUCTS])
         href = f"collections/{ch}.html"
         on = ' aria-current="page"' if href == current else (' class="is-active"' if current == "pages/catalog.html" and ch == "all" else "")
-        links.append(f'<li><a href="@/{href}"{on}>{esc(short_name(ch))}<sup>{n}</sup></a></li>')
+        links.append(f'<li><a href="@/{href}"{on}>{esc(short_name(ch))}<span class="filters__n">{n}</span></a></li>')
     return f'<nav class="filters" aria-label="Collections"><ul>{"".join(links)}</ul></nav>'
 
 
-def page_head(title, crumbs, count=None, tag="h1"):
+def page_head(title, crumbs, count=None, tag="h1", big=True):
+    """En-tete de page ; big=False : titre sobre (pages utilitaires), sans le condense en capitales."""
     meta = f'<p class="page-head__count">{plural(count, "product")}</p>' if count is not None else ""
+    cls = "page-head__title display" if big else "page-head__title title"
     return f"""<header class="page-head">
   <p class="page-head__crumbs">{crumbs}</p>
-  <{tag} class="page-head__title display" data-split>{words(title)}</{tag}>
+  <{tag} class="{cls}" data-split>{words(title)}</{tag}>
   {meta}
 </header>"""
 
@@ -249,37 +306,41 @@ def page_home():
     hm = site["home"]
     hero, col, sa, lb, nl = hm["hero"], content["collections"][hm["featured_collection"]], hm["shop_all"], hm["lookbook"], hm["newsletter"]
     feat = [h for h in col["products"] if h in PRODUCTS]
-    # date du drop = mise en ligne la plus recente des produits mis en avant
-    drop = max(PRODUCTS[h]["published_at"] for h in feat)[:10] if feat else ""
-    drop = ".".join(reversed(drop.split("-"))) if drop else ""
     k, lines = 0, []
     for line in hero.get("lines") or [hero["title"]]:
         lines.append(f'<span class="line">{words(line, k)}</span>')
         k += len(line.split())
-    wearing = ", ".join(f'<a class="link" href="@/{url_product(h)}">{esc(PRODUCTS[h]["title"])}</a>' for h in feat)
-    # petite version pour les telephones
+    # index numerote des pieces de la collection : chaque ligne mene a sa fiche
+    index = "".join(
+        f'<li><a href="@/{url_product(h)}"><span class="hero__num">{i:02d}</span><span class="hero__name">{esc(PRODUCTS[h]["title"])}</span>'
+        f'<span class="hero__price">{card_price(PRODUCTS[h])}</span></a></li>'
+        for i, h in enumerate(feat, start=1))
+    # petite version pour les telephones (+ prechargement : c'est l'image la plus grande de l'ouverture)
+    big = f'@/{img_path(hero["image"])}'
     small = local_file(hero["image"], "-900")
-    srcset = f' srcset="@/{img_path(hero["image"], "-900")} 900w, @/{img_path(hero["image"])} 2400w" sizes="(max-width: 899px) 100vw, 42vw"' if small else ""
+    sizes = "(max-width: 899px) 100vw, 42vw"
+    set_ = f'@/{img_path(hero["image"], "-900")} 900w, {big} 2400w' if small else ""
+    srcset_attr = f' srcset="{set_}" sizes="{sizes}"' if small else ""
+    preload = f'\n<link rel="preload" as="image" href="{big}"' + (f' imagesrcset="{set_}" imagesizes="{sizes}"' if small else "") + ' fetchpriority="high">'
     n_lb = len(lb["images"])
     slides = "".join(
-        f'<li class="lookbook__item" data-reveal="curtain"><figure><div class="lookbook__frame"><img src="@/{img_path(u)}" alt="{esc(lb["title"])} – photo {i + 1}" width="900" height="1350" loading="lazy" decoding="async" draggable="false"></div>'
+        f'<li class="lookbook__item" data-reveal="curtain"><figure><div class="lookbook__frame"><img src="@/{img_path(u)}"{srcset(u, LOOKBOOK_W, "(max-width: 899px) 74vw, 30vw")} alt="{esc(lb["title"])} – photo {i + 1}" width="900" height="1350" loading="lazy" decoding="async" draggable="false"></div>'
         f'<figcaption>{i + 1:02d} / {n_lb:02d}</figcaption></figure></li>'
         for i, u in enumerate(lb["images"]))
     ticker = "".join(f"<li>{esc(t)}{STAR}</li>" for t in site["ticker"])
     n_all = len([h for h in content["collections"]["all"]["products"] if h in PRODUCTS])
     body = f"""<section class="hero" aria-labelledby="hero-title">
   <div class="hero__text">
-    <p class="hero__kicker"><span>{esc(hero['kicker'])}</span><span>{drop}</span></p>
+    <p class="hero__kicker"><span>{esc(hero['kicker'])}</span></p>
     <h1 class="hero__title display" id="hero-title" data-split>{''.join(lines)}</h1>
     <div class="hero__foot">
-      <p class="hero__sub">{esc(hero['sub'])}</p>
+      <ol class="hero__index" aria-label="{esc(col['title'].title())}">{index}</ol>
       <a class="btn" href="@/{hero['link']}"><span>{esc(hero['button'])}</span>{ARROW}</a>
     </div>
   </div>
-  <figure class="hero__media">
-    <div class="hero__frame"><div class="hero__zoom"><img class="hero__img" src="@/{img_path(hero['image'])}"{srcset} alt="Model wearing the Cherry tracksuit in front of a blue car" width="2400" height="3600" fetchpriority="high"></div></div>
-    <figcaption class="hero__caption"><span>Wearing</span> {wearing}</figcaption>
-  </figure>
+  <div class="hero__media">
+    <div class="hero__frame"><div class="hero__zoom"><img class="hero__img" src="{big}"{srcset_attr} alt="Model wearing the Cherry tracksuit in front of a blue car" width="2400" height="3600" fetchpriority="high"></div></div>
+  </div>
 </section>
 <section class="ticker" aria-label="About the clothes" data-ticker>
   <div class="ticker__track"><ul class="ticker__group">{ticker}</ul><ul class="ticker__group" aria-hidden="true">{ticker}</ul></div>
@@ -299,19 +360,21 @@ def page_home():
     {grid(feat, "grid--featured")}
   </div>
 </section>
+{closeups(hm.get("details"))}
 <section class="section shop-all" aria-label="{esc(sa['title'])}">
   <a class="shop-all__link" href="@/{sa['link']}">
-    <span class="section__num" aria-hidden="true">(02)</span>
+    <span class="section__num" aria-hidden="true">(03)</span>
     <span class="shop-all__title display"><span class="roll" data-text="{esc(sa['button'])}"><span>{esc(sa['button'])}</span></span></span>
     <span class="shop-all__meta"><span>{esc(sa['title'])}</span><span>{n_all}</span></span>
     <span class="shop-all__arrow">{ARROW}</span>
   </a>
 </section>
 <section class="lookbook" aria-labelledby="lookbook-title" data-lookbook-section>
+  <a class="skip-inline" href="#newsletter">Skip lookbook</a>
   <div class="lookbook__pin">
     <div class="lookbook__rail" data-lookbook-rail>
       <div class="lookbook__head">
-        <p class="section__num" aria-hidden="true">(03)</p>
+        <p class="section__num" aria-hidden="true">(04)</p>
         <h2 class="lookbook__title display" id="lookbook-title" data-split>{words(lb['heading'])}</h2>
         <p class="lookbook__sub">{esc(lb['title'])}<br>{n_lb} photos</p>
       </div>
@@ -322,13 +385,43 @@ def page_home():
   </div>
 </section>
 {newsletter(nl)}"""
-    return layout("index.html", None, body, image=img_path(hero["image"]), body_class="is-home")
+    return layout("index.html", None, body, image=hero["image"], head_extra=preload, body_class="is-home", collection=hm["featured_collection"])
+
+
+def closeups(dt):
+    """Section « The details » : gros plans tires des photos produits, legendes = details reels (data/content.json)."""
+    if not dt:
+        return ""
+    items = []
+    for it in dt["items"]:
+        p = PRODUCTS.get(it["product"])
+        im = next((x for x in p["images"] if x["src"] == it["image"]), None) if p else None
+        if not im or it["detail"] not in content["products"].get(it["product"], {}).get("details", []):
+            print(f"ATTENTION site.json home.details : photo ou detail introuvable pour {it['product']} ({it['detail']}) -> gros plan ignore")
+            continue
+        k = len(items) + 1
+        sizes = f"(max-width: 899px) {'100vw' if k == 1 else '50vw'}, 31vw"
+        items.append(
+            f'<li class="closeups__item" data-reveal="curtain"><a href="@/{url_product(it["product"])}"><figure>'
+            f'<div class="closeups__frame"><img src="@/{img_path(im["src"])}"{srcset(im["src"], min(PRODUCT_W, im["width"]), sizes)} alt="{esc(p["title"])} – {esc(it["detail"].lower())}" width="{im["width"]}" height="{im["height"]}" loading="lazy" decoding="async"></div>'
+            f'<figcaption><span class="closeups__num">{k:02d}</span><span class="closeups__detail">{esc(it["detail"])}</span><span class="closeups__product">{esc(p["title"])}</span></figcaption>'
+            f'</figure></a></li>')
+    if not items:
+        return ""
+    return f"""<section class="section closeups" aria-labelledby="closeups-title">
+  <div class="section__head">
+    <p class="section__num" aria-hidden="true">(02)</p>
+    <h2 class="section__title display" id="closeups-title" data-split>{words(dt['title'])}</h2>
+    <p class="section__meta">{plural(len(items), "detail")}</p>
+  </div>
+  <ul class="closeups__grid">{"".join(items)}</ul>
+</section>"""
 
 
 def newsletter(nl):
     # Inscription envoyee a la liste clients de la boutique Shopify (meme formulaire que l'original).
-    return f"""<section class="section newsletter" aria-labelledby="newsletter-title">
-  <p class="section__num" aria-hidden="true">(04)</p>
+    return f"""<section class="section newsletter" id="newsletter" aria-labelledby="newsletter-title">
+  <p class="section__num" aria-hidden="true">(05)</p>
   <h2 class="newsletter__title display" id="newsletter-title" data-split>{words(nl['title'])}</h2>
   <div class="newsletter__side" data-reveal>
     <p class="newsletter__text">{esc(nl['text'])}</p>
@@ -344,20 +437,24 @@ def newsletter(nl):
 </section>"""
 
 
-def page_listing(path, title, handles, label):
-    n = len([h for h in handles if h in PRODUCTS])
+def page_listing(path, title, handles, label, collection=None):
+    hs = [h for h in handles if h in PRODUCTS]
     crumbs = f'<a class="link" href="@/pages/catalog.html">Shop</a><span aria-hidden="true">/</span><span>{esc(label)}</span>'
-    body = f"""<div class="listing">
-{page_head(title, crumbs, n)}
+    # data-count : 2 produits = titre collant a gauche + 2 grandes tuiles a droite (voir .listing[data-count="2"])
+    body = f"""<div class="listing" data-count="{len(hs)}">
+<div class="listing__head">
+{page_head(title, crumbs, len(hs))}
 {collection_nav(path)}
-{grid(handles, "grid--page", heading="h2")}
+</div>
+{grid(hs, "grid--page", heading="h2")}
 </div>"""
-    return layout(path, title, body)
+    image = PRODUCTS[hs[0]]["images"][0]["src"] if hs else None
+    return layout(path, title, body, image=image, collection=collection)
 
 
 def page_collection(h):
     c = content["collections"][h]
-    return page_listing(f"collections/{h}.html", c["title"].title() if c["title"].isupper() else c["title"], c["products"], short_name(h))
+    return page_listing(f"collections/{h}.html", c["title"].title() if c["title"].isupper() else c["title"], c["products"], short_name(h), collection=h)
 
 
 def page_catalog():
@@ -369,8 +466,10 @@ def page_product(h):
     extra = content["products"].get(h, {})
     title = esc(p["title"])
     n = len(p["images"])
+    # ordinateur : 1re photo en grand (62vw) puis 2 par rangee ; telephone : une photo par ecran
     imgs = "".join(
-        f'<li class="gallery__item"><img{FIRST if i == 0 else ""} src="@/{img_path(im["src"])}" alt="{title} – image {i + 1} of {n}" width="{im["width"]}" height="{im["height"]}"'
+        f'<li class="gallery__item"><img{FIRST if i == 0 else ""} src="@/{img_path(im["src"])}"{srcset(im["src"], min(PRODUCT_W, im["width"]), "(max-width: 899px) 100vw, " + ("62vw" if i == 0 else "31vw"))}'
+        f' alt="{title} – image {i + 1} of {n}" width="{im["width"]}" height="{im["height"]}"'
         f'{HIGH if i == 0 else LAZY} decoding="async" draggable="false"></li>'
         for i, im in enumerate(p["images"]))
     nav = f"""<div class="gallery__nav">
@@ -400,14 +499,14 @@ def page_product(h):
     if extra.get("details"):
         acc.append(("Product Details", "", '<ul class="details">' + "".join(f"<li>{esc(d)}</li>" for d in extra["details"]) + "</ul>"))
     if extra.get("size_guide"):
-        acc.append(("Size Guide", ' id="size-guide"', f'<img src="@/{img_path(extra["size_guide"])}" alt="{title} size chart (measurements per size)" loading="lazy">'))
+        acc.append(("Size Guide", ' id="size-guide"', f'<img src="@/{img_path(extra["size_guide"])}"{img_dims(extra["size_guide"])} alt="{title} size chart (measurements per size)" loading="lazy">'))
     acc.append(("Shipping", "", site["shipping_html"]))
     accordion = "".join(f'<details class="accordion__item"{i}><summary>{t}</summary><div class="accordion__content rte">{c}</div></details>' for t, i, c in acc)
 
     related = [r for r in extra.get("related", []) if r in PRODUCTS and r != h]
     related_html = f"""<section class="section related" aria-labelledby="related-title">
-  <div class="section__head section__head--small">
-    <h2 class="section__title display" id="related-title" data-split>{words("Related")}</h2>
+  <div class="related__head">
+    <h2 class="related__title" id="related-title">Related</h2>
     <p class="section__meta">{plural(len(related), "piece")}</p>
   </div>
   {grid(related, "grid--related")}
@@ -435,7 +534,7 @@ def page_product(h):
   <div class="product__panel">
     <div class="product__sticky">
       <p class="product__crumbs">{crumbs}</p>
-      <h1 class="product__title display" data-split>{words(p['title'])}</h1>
+      <h1 class="product__title" data-split>{words(p['title'])}</h1>
       <p class="product__price"><span>{money(first['price'])}</span><span class="product__stock{' is-out' if not available(p) else ''}">{esc(note)}</span></p>
       <div class="product__desc rte">{p['body_html']}</div>
       <form class="buy" data-buy onsubmit="return false">
@@ -450,13 +549,13 @@ def page_product(h):
 </div>
 {related_html}"""
     return layout(url_product(h), p["title"], body, description=textwrap.shorten(desc_text, 160, placeholder="…") or None,
-                  image=img_path(p["images"][0]["src"]), head_extra=head, body_class="is-product")
+                  image=p["images"][0]["src"], head_extra=head, body_class="is-product", collection=ch)
 
 
 def page_contact():
     crumbs = '<span>Get in touch</span>'
     body = f"""<div class="contact-page">
-{page_head("Contact", crumbs)}
+{page_head("Contact", crumbs, big=False)}
 <div class="contact-page__body">
   <div class="contact-page__info" data-reveal>
     <p class="field-label">Email</p>
@@ -483,7 +582,7 @@ def page_simple(path, title, inner, cls="rte page-content", after="", kicker="In
   <header class="text-page__head">
     <div class="text-page__sticky">
       <p class="text-page__kicker">{esc(kicker)}</p>
-      <h1 class="text-page__title display" data-split>{words(title)}</h1>
+      <h1 class="text-page__title title" data-split>{words(title)}</h1>
       {aside}
     </div>
   </header>
@@ -500,7 +599,7 @@ def policy_index(path):
 
 def page_cart():
     body = f"""<div class="cart-page">
-  <h1 class="cart-page__title display" data-split>{words("Your cart")}</h1>
+  <h1 class="cart-page__title title" data-split>{words("Your cart")}</h1>
   <p>Your cart is empty.</p>
   <a class="btn" href="@/collections/all.html"><span>Shop all</span>{ARROW}</a>
 </div>"""
@@ -546,7 +645,7 @@ def build():
     for h in PRODUCTS:
         pages[url_product(h)] = page_product(h)
     for h, pg in content["pages"].items():
-        html_ = re.sub(r'src="([^"]+)"', lambda m: f'src="@/{img_path(m.group(1))}" loading="lazy"', pg["html"])
+        html_ = re.sub(r'src="([^"]+)"', lambda m: f'src="@/{img_path(m.group(1))}"{img_dims(m.group(1))} loading="lazy"', pg["html"])
         after = (f'<section class="section related" aria-label="Products">{grid(content["collections"][pg["products"]]["products"], "grid--related", heading="h2")}</section>'
                  if pg.get("products") else "")
         pages[f"pages/{h}.html"] = page_simple(f"pages/{h}.html", pg["title"], html_, after=after, kicker="Guide", description=pg.get("description"))

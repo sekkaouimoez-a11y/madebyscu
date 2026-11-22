@@ -11,6 +11,10 @@
   "code": "EUR",
   "decimal": ","
  },
+ "collection_accents": {
+  "_aide": "couleur d'accent par collection (cle = collection de content.json) ; sans entree : noir",
+  "cherry": "#7a0a22"
+ },
  "logo": "//madebyscu.com/cdn/shop/files/denim_details_30.png?v=1781732004",
  "favicon": "//madebyscu.com/cdn/shop/files/denim_details_28.png?v=1779040215",
  "announcement": "FREE SHIPPING ON DOMESTIC ORDERS OVER £120",
@@ -62,10 +66,30 @@
     "Cherry",
     "tracksuit",
     "out now"
-   ],
-   "sub": "Zip-up + Sweats in a 400GSM cotton blend, cut & sewn to our own measurements."
+   ]
   },
   "featured_collection": "cherry",
+  "details": {
+   "_aide": "gros plans de l'accueil : une photo d'un produit + un de ses details (data/content.json), verifies par build.py",
+   "title": "The details",
+   "items": [
+    {
+     "product": "cherry-zip-up",
+     "image": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/8AF8A93B-EB03-4CA3-AADF-35799F1B4979.jpg?v=1790615153",
+     "detail": "Logo embroidery"
+    },
+    {
+     "product": "panel-denim",
+     "image": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/image_5.png?v=1781693704",
+     "detail": "Leather back-tab branding"
+    },
+    {
+     "product": "cherry-zip-up",
+     "image": "https://cdn.shopify.com/s/files/1/0778/5303/2797/files/CF46B18F-E8A5-4C4B-83BC-B463536CD7F7.jpg?v=1790615153",
+     "detail": "Engraved zipper"
+    }
+   ]
+  },
   "shop_all": {
    "title": "All products",
    "button": "Shop all",
