@@ -175,53 +175,24 @@
     });
   });
 
-  // ---------- lookbook ----------
-  // ordinateur + navigateur qui sait lier une animation au defilement : bande horizontale epinglee ;
-  // sinon (telephone, mouvement reduit, vieux navigateur) : carrousel natif + barre + glisser a la souris
-  const pinQuery = matchMedia("(min-width: 900px) and (prefers-reduced-motion: no-preference)");
-  const canPin = () => pinQuery.matches && CSS.supports("animation-timeline: view()");
+  // ---------- lookbook : carrousel natif au telephone (grille fixe sur ordinateur) + barre + glisser a la souris ----------
   $$("[data-lookbook-section]").forEach((section) => {
-    const rail = $("[data-lookbook-rail]", section);
-    const pin = $(".lookbook__pin", section);
     const track = $("[data-lookbook]", section);
     const thumb = $("[data-lookbook-thumb]", section);
-    let speed = 1; // px de bande par px de defilement
-    const layout = () => {
-      section.classList.toggle("is-pinned", canPin());
-      if (section.classList.contains("is-pinned")) {
-        // epinglage plafonne a 1,25 hauteur d'ecran : au-dela, la bande avance plus vite que la page
-        const dist = Math.max(0, rail.scrollWidth - pin.clientWidth);
-        const run = Math.min(dist, Math.round(innerHeight * 1.25));
-        speed = run ? dist / run : 1;
-        section.style.setProperty("--dist", `${dist}px`);
-        section.style.setProperty("--pin", `${run}px`);
-        thumb.style.cssText = "";
-      } else {
-        section.style.removeProperty("--dist");
-        section.style.removeProperty("--pin");
-        sync();
-      }
-    };
     const sync = () => {
-      if (section.classList.contains("is-pinned")) return;
       const max = track.scrollWidth - track.clientWidth;
       const ratio = track.clientWidth / track.scrollWidth;
       thumb.style.width = `${Math.min(100, ratio * 100)}%`;
       thumb.style.left = `${max > 0 ? (track.scrollLeft / max) * (100 - ratio * 100) : 0}%`;
     };
     track.addEventListener("scroll", sync, { passive: true });
-    addEventListener("resize", layout);
-    pinQuery.addEventListener("change", layout);
-    $$("img", track).forEach((im) => im.addEventListener("load", layout));
-    layout();
-    // clavier : « Shop the look » est loin a droite dans la bande epinglee ; on amene la fin de l'epinglage a l'ecran
-    $(".lookbook__end", section).addEventListener("focus", () => {
-      if (section.classList.contains("is-pinned")) scrollTo({ top: section.getBoundingClientRect().bottom + scrollY - innerHeight, behavior: "auto" });
-    });
+    addEventListener("resize", sync);
+    $$("img", track).forEach((im) => im.addEventListener("load", sync));
+    sync();
 
     let start = null;
     track.addEventListener("pointerdown", (e) => {
-      if (e.pointerType !== "mouse" || section.classList.contains("is-pinned")) return;
+      if (e.pointerType !== "mouse" || track.scrollWidth <= track.clientWidth) return;
       start = { x: e.clientX, left: track.scrollLeft };
       track.classList.add("is-dragging");
       track.setPointerCapture(e.pointerId);
@@ -234,29 +205,16 @@
       if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
       e.preventDefault(); // sinon le navigateur fait aussi defiler la piste (anime) : deux photos par appui
       const dir = e.key === "ArrowRight" ? 1 : -1;
-      const behavior = calm.matches ? "auto" : "smooth";
-      if (section.classList.contains("is-pinned")) scrollBy({ top: dir * ((track.firstElementChild?.offsetWidth || 300) + 40) / speed, behavior }); // bande epinglee : les fleches font defiler la page
-      else track.scrollBy({ left: dir * ((track.firstElementChild?.offsetWidth || 280) + 10), behavior });
-    });
-  });
-
-  // ---------- bandeau qui defile : bouton pause (WCAG 2.2.2) ----------
-  $$("[data-ticker]").forEach((t) => {
-    const b = $("[data-ticker-toggle]", t);
-    if (calm.matches) { b.hidden = true; return; }
-    b.addEventListener("click", () => {
-      const paused = t.classList.toggle("is-paused");
-      b.setAttribute("aria-pressed", paused);
-      b.textContent = paused ? "Play" : "Pause";
+      track.scrollBy({ left: dir * ((track.firstElementChild?.offsetWidth || 280) + 10), behavior: calm.matches ? "auto" : "smooth" });
     });
   });
 
   // ---------- apparitions au defilement (une seule fois) ----------
   // ce qui est deja a l'ecran au chargement n'est jamais cache (animation CSS directe) ;
   // le reste est « arme » puis revele quand il entre dans la fenetre
-  $$(".lookbook__track").forEach((g) => [...g.children].forEach((c, k) => c.style.setProperty("--i", k % 4)));
+  $$(".ticker__group").forEach((g) => [...g.children].forEach((c, k) => c.style.setProperty("--i", k)));
   // grilles : rang = colonne reelle, la cascade suit l'ordre de lecture quel que soit le nombre de colonnes
-  $$(".grid, .closeups__grid").forEach((g) => [...g.children].forEach((c) => c.style.setProperty("--i", Math.round((c.offsetLeft - g.firstElementChild.offsetLeft) / c.offsetWidth))));
+  $$(".grid, .closeups__grid, .lookbook__track, .footer__grid").forEach((g) => [...g.children].forEach((c) => c.style.setProperty("--i", Math.round((c.offsetLeft - g.firstElementChild.offsetLeft) / c.offsetWidth))));
   if ("IntersectionObserver" in window && !calm.matches) {
     const io = new IntersectionObserver((entries) => entries.forEach((e) => {
       if (!e.isIntersecting) return;
@@ -266,7 +224,7 @@
     $$("[data-reveal], [data-split]").forEach((el) => {
       const r = el.getBoundingClientRect();
       if (r.top < innerHeight && r.bottom > 0 && r.left < innerWidth && r.right > 0) return;
-      if (el.matches(".is-pinned .lookbook__item") && r.left >= innerWidth) return; // arrivent de droite trop vite pour un rideau
+      if (r.left >= innerWidth || r.right <= 0) return; // hors ecran sur le cote = dans un carrousel : pas de bulle au glisser
       el.dataset.armed = "";
       io.observe(el);
     });

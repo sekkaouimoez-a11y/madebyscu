@@ -2,8 +2,8 @@
  "_aide": "Reglages et textes du site. Apres modif : python outils/build.py",
  "name": "madebyscu",
  "description": "The official website. Shop madebyscu. Subscribe to the newsletter for the latest update on our drops. Based in the UK.",
- "base_path": "/",
- "site_url": "",
+ "base_path": "/madebyscu/",
+ "site_url": "https://sekkaouimoez-a11y.github.io/madebyscu",
  "shopify_domain": "madebyscu.com",
  "email": "info@madebyscu.com",
  "currency": {

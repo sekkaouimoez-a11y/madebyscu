@@ -44,7 +44,7 @@ python outils/build.py
 - **Couleur d'accent** : noire par défaut. Une collection peut avoir la sienne dans `data/site.json` → `collection_accents` (ex. `"cherry": "#7a0a22"`). `build.py` la pose sur les pages de cette collection, sur ses fiches produits et sur l'accueil si elle est mise en avant (`home.featured_collection`). Elle ne sert qu'à « OUT NOW » et à quelques détails (fil d'Ariane, sélection de texte). Pour un nouveau drop : ajouter sa couleur, changer `featured_collection`, puis `python outils/build.py`.
 - **Gros plans de l'accueil** (« The details ») : `data/site.json` → `home.details`. Chaque gros plan = une photo d'un produit + un de ses détails de `data/content.json` (`build.py` vérifie que les deux existent).
 - **Mouvement** : tout est dans `assets/css/style.css`, bloc `MOUVEMENT` (sous `prefers-reduced-motion: no-preference`). Avec « réduire les animations » dans le système, tout est visible tout de suite et immobile ; sans JavaScript, rien ne reste caché.
-- **Couper un effet** : supprimer (ou commenter) sa ligne dans ce bloc, par exemple `.shop-all__title` (glissement de « Shop all »), `.hero__zoom` (zoom de la photo d'ouverture), `.footer__mark-inner` (logo du pied qui monte), `.ticker__track` (bandeau qui défile), `[data-reveal="curtain"]` (rideaux des photos). Le lookbook épinglé se coupe dans `assets/js/site.js` (`canPin`) : il redevient un carrousel, comme sur téléphone.
+- **Couper un effet** : supprimer (ou commenter) sa ligne dans ce bloc, par exemple `.hero__zoom` (léger zoom de la photo d'ouverture), `.footer__mark-inner` (logo du pied qui monte), `[data-reveal]` (petites bulles des blocs et cartes), `[data-reveal="bubble"]` (photos qui s'ouvrent en bulle).
 
 ## Rester synchronisé avec Shopify
 

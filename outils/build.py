@@ -217,10 +217,10 @@ def layout(path, title, body, description=None, image=None, head_extra="", body_
 </main>
 <footer class="footer">
   <div class="footer__grid">
-    <nav class="footer__col" aria-label="Shop"><p class="footer__label">Shop</p><ul>{foot_menu}</ul></nav>
-    <nav class="footer__col" aria-label="Policies"><p class="footer__label">Legal</p><ul>{foot}</ul></nav>
-    <div class="footer__col"><p class="footer__label">Contact</p><ul><li><a class="link" href="mailto:{esc(site['email'])}">{esc(site['email'])}</a></li><li>{esc(site['based'])}</li></ul></div>
-    <p class="footer__col footer__note">{esc(site['announcement'])}</p>
+    <nav class="footer__col" aria-label="Shop" data-reveal><p class="footer__label">Shop</p><ul>{foot_menu}</ul></nav>
+    <nav class="footer__col" aria-label="Policies" data-reveal><p class="footer__label">Legal</p><ul>{foot}</ul></nav>
+    <div class="footer__col" data-reveal><p class="footer__label">Contact</p><ul><li><a class="link" href="mailto:{esc(site['email'])}">{esc(site['email'])}</a></li><li>{esc(site['based'])}</li></ul></div>
+    <p class="footer__col footer__note" data-reveal>{esc(site['announcement'])}</p>
   </div>
   <div class="footer__mark" aria-hidden="true"><div class="footer__mark-inner">{logo("logo")}</div></div>
   <p class="footer__copy">&copy; {YEAR}, <a class="link" href="{R}index.html">{esc(site['name'])}</a></p>
@@ -327,10 +327,10 @@ def page_home():
     preload = f'\n<link rel="preload" as="image" href="{big}"' + (f' imagesrcset="{set_}" imagesizes="{sizes}"' if small else "") + ' fetchpriority="high">'
     n_lb = len(lb["images"])
     slides = "".join(
-        f'<li class="lookbook__item" data-reveal="curtain"><figure><div class="lookbook__frame"><img src="@/{img_path(u)}"{srcset(u, LOOKBOOK_W, "(max-width: 899px) 74vw, 30vw")} alt="{esc(lb["title"])} – photo {i + 1}" width="900" height="1350" loading="lazy" decoding="async" draggable="false"></div>'
+        f'<li class="lookbook__item" data-reveal="bubble"><figure><div class="lookbook__frame"><img src="@/{img_path(u)}"{srcset(u, LOOKBOOK_W, "(max-width: 899px) 74vw, 30vw")} alt="{esc(lb["title"])} – photo {i + 1}" width="900" height="1350" loading="lazy" decoding="async" draggable="false"></div>'
         f'<figcaption>{i + 1:02d} / {n_lb:02d}</figcaption></figure></li>'
         for i, u in enumerate(lb["images"]))
-    ticker = "".join(f"<li>{esc(t)}{STAR}</li>" for t in site["ticker"])
+    ticker = "".join(f"<li data-reveal>{esc(t)}{STAR}</li>" for t in site["ticker"])
     n_all = len([h for h in content["collections"]["all"]["products"] if h in PRODUCTS])
     body = f"""<section class="hero" aria-labelledby="hero-title">
   <div class="hero__text">
@@ -345,9 +345,8 @@ def page_home():
     <a class="hero__frame" href="@/{hero['link']}" tabindex="-1" aria-hidden="true"><div class="hero__zoom"><img class="hero__img" src="{big}"{srcset_attr} alt="{esc(hero.get('alt', ''))}" width="2400" height="3600" fetchpriority="high"></div></a>
   </div>
 </section>
-<section class="ticker" aria-label="About the clothes" data-ticker>
-  <div class="ticker__track"><ul class="ticker__group">{ticker}</ul><ul class="ticker__group" aria-hidden="true">{ticker}</ul></div>
-  <button class="ticker__toggle" type="button" aria-pressed="false" data-ticker-toggle>Pause</button>
+<section class="ticker" aria-label="About the clothes">
+  <ul class="ticker__group">{ticker}</ul>
 </section>
 <section class="section featured" aria-labelledby="featured-title">
   <div class="section__head">
@@ -381,7 +380,7 @@ def page_home():
         <h2 class="lookbook__title display" id="lookbook-title" data-split>{words(lb['heading'])}</h2>
         <p class="lookbook__sub">{esc(lb['title'])}<br>{n_lb} photos</p>
       </div>
-      <ul class="lookbook__track" data-lookbook tabindex="0" aria-label="Lookbook photos, scroll sideways">{slides}</ul>
+      <ul class="lookbook__track" data-lookbook tabindex="0" aria-label="Lookbook photos">{slides}</ul>
       <a class="lookbook__end" href="@/{hero['link']}"><span class="display">{esc(lb['end'])}</span>{ARROW}</a>
     </div>
     <div class="lookbook__bar" aria-hidden="true"><span data-lookbook-thumb></span></div>
@@ -405,7 +404,7 @@ def closeups(dt):
         k = len(items) + 1
         sizes = f"(max-width: 899px) {'100vw' if k == 1 else '50vw'}, 31vw"
         items.append(
-            f'<li class="closeups__item" data-reveal="curtain"><a href="@/{url_product(it["product"])}"><figure>'
+            f'<li class="closeups__item" data-reveal="bubble"><a href="@/{url_product(it["product"])}"><figure>'
             f'<div class="closeups__frame"><img src="@/{img_path(im["src"])}"{srcset(im["src"], min(PRODUCT_W, im["width"]), sizes)} alt="{esc(p["title"])} – {esc(it["detail"].lower())}" width="{im["width"]}" height="{im["height"]}" loading="lazy" decoding="async"></div>'
             f'<figcaption><span class="closeups__num">{k:02d}</span><span class="closeups__detail">{esc(it["detail"])}</span><span class="closeups__product">{esc(p["title"])}</span></figcaption>'
             f'</figure></a></li>')
@@ -471,7 +470,7 @@ def page_product(h):
     n = len(p["images"])
     # ordinateur : 2 photos 3:4 par rangee, comme les cartes ; telephone : une photo par ecran
     imgs = "".join(
-        f'<li class="gallery__item"><img{FIRST if i == 0 else ""} src="@/{img_path(im["src"])}"{srcset(im["src"], min(PRODUCT_W, im["width"]), "(max-width: 899px) 100vw, 31vw")}'
+        f'<li class="gallery__item" data-reveal="bubble"><img{FIRST if i == 0 else ""} src="@/{img_path(im["src"])}"{srcset(im["src"], min(PRODUCT_W, im["width"]), "(max-width: 899px) 100vw, 31vw")}'
         f' alt="{title} – image {i + 1} of {n}" width="{im["width"]}" height="{im["height"]}"'
         f'{HIGH if i == 0 else LAZY} decoding="async" draggable="false"></li>'
         for i, im in enumerate(p["images"]))
