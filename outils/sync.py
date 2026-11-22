@@ -75,10 +75,10 @@ def images_wanted():
     site = json.loads((DATA / "site.json").read_text(encoding="utf-8"))
     content = json.loads((DATA / "content.json").read_text(encoding="utf-8"))
     products = json.loads((DATA / "products.json").read_text(encoding="utf-8"))["products"]
-    yield site["logo"], 400
     yield site["favicon"], 192
     yield site["home"]["hero"]["image"], 2400
     yield site["home"]["hero"]["image"], 900, "-900"  # version telephone
+    yield site["home"]["hero"]["image"], 1400, "-1400"  # telephones DPR 3 et ecrans Retina
     for u in site["home"]["lookbook"]["images"]:
         yield u, LOOKBOOK_W
         yield u, SMALL_W, SMALL

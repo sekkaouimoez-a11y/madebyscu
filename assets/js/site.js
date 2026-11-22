@@ -214,6 +214,10 @@
     pinQuery.addEventListener("change", layout);
     $$("img", track).forEach((im) => im.addEventListener("load", layout));
     layout();
+    // clavier : « Shop the look » est loin a droite dans la bande epinglee ; on amene la fin de l'epinglage a l'ecran
+    $(".lookbook__end", section).addEventListener("focus", () => {
+      if (section.classList.contains("is-pinned")) scrollTo({ top: section.getBoundingClientRect().bottom + scrollY - innerHeight, behavior: "auto" });
+    });
 
     let start = null;
     track.addEventListener("pointerdown", (e) => {
@@ -227,14 +231,12 @@
     track.addEventListener("pointerup", end);
     track.addEventListener("pointercancel", end);
     track.addEventListener("keydown", (e) => {
-      if (section.classList.contains("is-pinned")) { // bande epinglee : les fleches font defiler la page
-        const step = ((track.firstElementChild?.offsetWidth || 300) + 40) / speed;
-        if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); scrollBy({ top: e.key === "ArrowRight" ? step : -step, behavior: calm.matches ? "auto" : "smooth" }); }
-        return;
-      }
-      const step = (track.firstElementChild?.offsetWidth || 280) + 10;
-      if (e.key === "ArrowRight") track.scrollBy({ left: step, behavior: "smooth" });
-      if (e.key === "ArrowLeft") track.scrollBy({ left: -step, behavior: "smooth" });
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      e.preventDefault(); // sinon le navigateur fait aussi defiler la piste (anime) : deux photos par appui
+      const dir = e.key === "ArrowRight" ? 1 : -1;
+      const behavior = calm.matches ? "auto" : "smooth";
+      if (section.classList.contains("is-pinned")) scrollBy({ top: dir * ((track.firstElementChild?.offsetWidth || 300) + 40) / speed, behavior }); // bande epinglee : les fleches font defiler la page
+      else track.scrollBy({ left: dir * ((track.firstElementChild?.offsetWidth || 280) + 10), behavior });
     });
   });
 
@@ -252,7 +254,9 @@
   // ---------- apparitions au defilement (une seule fois) ----------
   // ce qui est deja a l'ecran au chargement n'est jamais cache (animation CSS directe) ;
   // le reste est « arme » puis revele quand il entre dans la fenetre
-  $$(".grid, .lookbook__track, .closeups__grid").forEach((g) => [...g.children].forEach((c, k) => c.style.setProperty("--i", k % 4)));
+  $$(".lookbook__track").forEach((g) => [...g.children].forEach((c, k) => c.style.setProperty("--i", k % 4)));
+  // grilles : rang = colonne reelle, la cascade suit l'ordre de lecture quel que soit le nombre de colonnes
+  $$(".grid, .closeups__grid").forEach((g) => [...g.children].forEach((c) => c.style.setProperty("--i", Math.round((c.offsetLeft - g.firstElementChild.offsetLeft) / c.offsetWidth))));
   if ("IntersectionObserver" in window && !calm.matches) {
     const io = new IntersectionObserver((entries) => entries.forEach((e) => {
       if (!e.isIntersecting) return;
@@ -262,19 +266,23 @@
     $$("[data-reveal], [data-split]").forEach((el) => {
       const r = el.getBoundingClientRect();
       if (r.top < innerHeight && r.bottom > 0 && r.left < innerWidth && r.right > 0) return;
+      if (el.matches(".is-pinned .lookbook__item") && r.left >= innerWidth) return; // arrivent de droite trop vite pour un rideau
       el.dataset.armed = "";
       io.observe(el);
     });
   }
 
   // ---------- transition de page : la photo de la carte devient la 1re photo de la fiche ----------
+  // photo affichee dans la piste de la carte (la 2e au survol, ou apres un glisser)
+  const shownImg = (card) => {
+    const track = $("[data-card-track]", card);
+    return track.children[Math.round(track.scrollLeft / (track.clientWidth || 1))] || track.children[0];
+  };
   document.addEventListener("click", (e) => {
     const a = e.target.closest(".card a");
     if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
     $$("[data-vt]").forEach((el) => { el.style.viewTransitionName = "none"; });
-    const track = $("[data-card-track]", a.closest(".card"));
-    const img = track.children[Math.round(track.scrollLeft / (track.clientWidth || 1))] || track.children[0];
-    img.style.viewTransitionName = "product";
+    shownImg(a.closest(".card")).style.viewTransitionName = "product";
   });
   // retour arriere restaure depuis le cache : on retire le nom pose au clic
   addEventListener("pageshow", (e) => {
@@ -282,12 +290,14 @@
   });
   // retour depuis une fiche : sa photo revient dans sa carte (morph inverse)
   addEventListener("pagereveal", (e) => {
-    const from = e.viewTransition && window.navigation?.activation?.from?.url;
+    const act = window.navigation?.activation;
+    // Retour / Avance seulement : en navigation normale (produit lie, logo) la carte est hors de l'ecran
+    const from = e.viewTransition && act?.navigationType === "traverse" && act.from?.url;
     if (!from) return;
     const file = new URL(from).pathname.split("/").pop();
     const link = $$(".card__name a").find((a) => a.pathname.endsWith(`/products/${file}`));
     if (!link) return;
-    const img = $("[data-card-track] img", link.closest(".card"));
+    const img = shownImg(link.closest(".card"));
     const named = $$("[data-vt]"); // un seul element par nom, sinon le navigateur annule la transition
     named.forEach((el) => { el.style.viewTransitionName = "none"; });
     img.style.viewTransitionName = "product";

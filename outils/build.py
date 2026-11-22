@@ -8,7 +8,7 @@ import datetime, hashlib, html, json, re, sys, textwrap
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from sync import IMG, local_file, cdn, PRODUCT_W, LOOKBOOK_W, SMALL_W, SMALL  # meme nommage des images que le telechargement
+from sync import local_file, cdn, PRODUCT_W, LOOKBOOK_W, SMALL_W, SMALL  # meme nommage des images que le telechargement
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -18,6 +18,7 @@ content = json.loads((DATA / "content.json").read_text(encoding="utf-8"))
 PRODUCTS = {}
 for _p in json.loads((DATA / "products.json").read_text(encoding="utf-8"))["products"]:
     if _p["images"] and _p["variants"]:
+        _p["title"] = _p["title"].title() if _p["title"].isupper() else _p["title"]  # « PANEL DENIM » -> « Panel Denim », comme les autres fiches
         PRODUCTS[_p["handle"]] = _p
     else:
         print(f"ATTENTION produit ignore (sans photo ou sans variante) : {_p['handle']}")
@@ -69,9 +70,11 @@ def img_dims(url):
 
 
 def og_image(url):
-    """Adresse absolue de l'image de partage : celle du site s'il a une adresse, sinon le CDN Shopify."""
+    """Adresse absolue de l'image de partage : celle du site s'il a une adresse (version 900 si elle existe), sinon le CDN Shopify."""
     base = site["site_url"].rstrip("/")
-    return f"{base}/{img_path(url)}" if base else cdn(url) + ("&" if "?" in cdn(url) else "?") + "width=1200"
+    if not base:
+        return cdn(url) + ("&" if "?" in cdn(url) else "?") + "width=1200"
+    return f"{base}/{img_path(url, '-900') if local_file(url, '-900') else img_path(url)}"
 
 
 def accent(collection):
@@ -188,7 +191,7 @@ def layout(path, title, body, description=None, image=None, head_extra="", body_
 <link rel="preload" href="{R}assets/fonts/geist-mono-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{R}assets/css/style.css?v={VER['css/style.css']}">
 <script>document.documentElement.classList.add("js")</script>
-<script src="{R}assets/js/site.js?v={VER['js/site.js']}" defer></script>{head_extra}
+<script src="{R}assets/js/site.js?v={VER['js/site.js']}" defer blocking="render"></script>{head_extra}
 </head>
 <body{body_attrs}>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -264,7 +267,7 @@ def card_sizes(kind, n, i):
     if kind == "featured":
         return "(max-width: 899px) 50vw, 36vw"
     if kind == "page" and n == 1:
-        return "(max-width: 899px) 100vw, 400px"
+        return "(max-width: 899px) 100vw, 32vw"
     if kind == "page" and n == 2:
         return "(max-width: 899px) 50vw, 32vw"
     if kind == "page" and n == 5:
@@ -319,7 +322,7 @@ def page_home():
     big = f'@/{img_path(hero["image"])}'
     small = local_file(hero["image"], "-900")
     sizes = "(max-width: 899px) 100vw, 42vw"
-    set_ = f'@/{img_path(hero["image"], "-900")} 900w, {big} 2400w' if small else ""
+    set_ = f'@/{img_path(hero["image"], "-900")} 900w, @/{img_path(hero["image"], "-1400")} 1400w, {big} 2400w' if small else ""
     srcset_attr = f' srcset="{set_}" sizes="{sizes}"' if small else ""
     preload = f'\n<link rel="preload" as="image" href="{big}"' + (f' imagesrcset="{set_}" imagesizes="{sizes}"' if small else "") + ' fetchpriority="high">'
     n_lb = len(lb["images"])
@@ -339,7 +342,7 @@ def page_home():
     </div>
   </div>
   <div class="hero__media">
-    <div class="hero__frame"><div class="hero__zoom"><img class="hero__img" src="{big}"{srcset_attr} alt="Model wearing the Cherry tracksuit in front of a blue car" width="2400" height="3600" fetchpriority="high"></div></div>
+    <a class="hero__frame" href="@/{hero['link']}" tabindex="-1" aria-hidden="true"><div class="hero__zoom"><img class="hero__img" src="{big}"{srcset_attr} alt="{esc(hero.get('alt', ''))}" width="2400" height="3600" fetchpriority="high"></div></a>
   </div>
 </section>
 <section class="ticker" aria-label="About the clothes" data-ticker>
@@ -466,9 +469,9 @@ def page_product(h):
     extra = content["products"].get(h, {})
     title = esc(p["title"])
     n = len(p["images"])
-    # ordinateur : 1re photo en grand (62vw) puis 2 par rangee ; telephone : une photo par ecran
+    # ordinateur : 2 photos 3:4 par rangee, comme les cartes ; telephone : une photo par ecran
     imgs = "".join(
-        f'<li class="gallery__item"><img{FIRST if i == 0 else ""} src="@/{img_path(im["src"])}"{srcset(im["src"], min(PRODUCT_W, im["width"]), "(max-width: 899px) 100vw, " + ("62vw" if i == 0 else "31vw"))}'
+        f'<li class="gallery__item"><img{FIRST if i == 0 else ""} src="@/{img_path(im["src"])}"{srcset(im["src"], min(PRODUCT_W, im["width"]), "(max-width: 899px) 100vw, 31vw")}'
         f' alt="{title} – image {i + 1} of {n}" width="{im["width"]}" height="{im["height"]}"'
         f'{HIGH if i == 0 else LAZY} decoding="async" draggable="false"></li>'
         for i, im in enumerate(p["images"]))
@@ -503,14 +506,7 @@ def page_product(h):
     acc.append(("Shipping", "", site["shipping_html"]))
     accordion = "".join(f'<details class="accordion__item"{i}><summary>{t}</summary><div class="accordion__content rte">{c}</div></details>' for t, i, c in acc)
 
-    related = [r for r in extra.get("related", []) if r in PRODUCTS and r != h]
-    related_html = f"""<section class="section related" aria-labelledby="related-title">
-  <div class="related__head">
-    <h2 class="related__title" id="related-title">Related</h2>
-    <p class="section__meta">{plural(len(related), "piece")}</p>
-  </div>
-  {grid(related, "grid--related")}
-</section>""" if related else ""
+    related_html = related_section("Related", [r for r in extra.get("related", []) if r != h])
 
     ch = collection_of(h)
     crumbs = (f'<a class="link" href="@/pages/catalog.html">Shop</a><span aria-hidden="true">/</span>'
@@ -542,7 +538,6 @@ def page_product(h):
         <button type="button" class="btn btn--block buy__button" data-add-to-cart data-variant-id="{first['id']}"{"" if first["available"] else " disabled"}>{label}</button>
         <script type="application/json" data-variants>{js(variants)}</script>
       </form>
-      <p class="product__ship">Shipped within 48h<span aria-hidden="true">·</span>Tracked</p>
       <div class="accordion">{accordion}</div>
     </div>
   </div>
@@ -552,16 +547,25 @@ def page_product(h):
                   image=p["images"][0]["src"], head_extra=head, body_class="is-product", collection=ch)
 
 
+def related_section(title, handles, kind="grid--related"):
+    """Bandeau titre + nombre, puis grille de cartes (produits lies d'une fiche, produits du guide des tailles)."""
+    hs = [h for h in handles if h in PRODUCTS]
+    return f"""<section class="section related" aria-labelledby="related-title">
+  <div class="related__head">
+    <h2 class="related__title" id="related-title">{esc(title)}</h2>
+    <p class="section__meta">{plural(len(hs), "piece")}</p>
+  </div>
+  {grid(hs, kind)}
+</section>""" if hs else ""
+
+
 def page_contact():
-    crumbs = '<span>Get in touch</span>'
-    body = f"""<div class="contact-page">
-{page_head("Contact", crumbs, big=False)}
-<div class="contact-page__body">
-  <div class="contact-page__info" data-reveal>
+    # meme gabarit que les pages de texte ; la ligne d'envoi = 1er paragraphe de data/site.json > shipping_html
+    inner = f"""<div class="contact-page__info" data-reveal>
     <p class="field-label">Email</p>
     <p><a class="link" href="mailto:{esc(site['email'])}">{esc(site['email'])}</a></p>
     <p class="field-label">Shipping</p>
-    <p>Orders are fulfilled &amp; shipped within 48h.</p>
+    <p>{esc(text_of(site['shipping_html'].split('</p>')[0]))}</p>
   </div>
   <form class="contact" method="post" action="{SHOP}/contact#contact_form" accept-charset="UTF-8" data-reveal>
     <input type="hidden" name="form_type" value="contact">
@@ -571,10 +575,8 @@ def page_contact():
     <div class="field"><label class="field-label" for="c-email">Email</label><input id="c-email" type="email" name="contact[email]" autocomplete="email" required></div>
     <div class="field"><label class="field-label" for="c-message">Message</label><textarea id="c-message" name="contact[body]" rows="6" required></textarea></div>
     <button class="btn btn--block" type="submit"><span>Send</span>{ARROW}</button>
-  </form>
-</div>
-</div>"""
-    return layout("pages/contact.html", "Contact", body, description=f"Contact {site['name']}: {site['email']}")
+  </form>"""
+    return page_simple("pages/contact.html", "Contact", inner, cls="contact-page__body", kicker="Get in touch", description=f"Contact {site['name']}: {site['email']}")
 
 
 def page_simple(path, title, inner, cls="rte page-content", after="", kicker="Info", description=None, aside=""):
@@ -646,13 +648,14 @@ def build():
         pages[url_product(h)] = page_product(h)
     for h, pg in content["pages"].items():
         html_ = re.sub(r'src="([^"]+)"', lambda m: f'src="@/{img_path(m.group(1))}"{img_dims(m.group(1))} loading="lazy"', pg["html"])
-        after = (f'<section class="section related" aria-label="Products">{grid(content["collections"][pg["products"]]["products"], "grid--related", heading="h2")}</section>'
-                 if pg.get("products") else "")
+        col = content["collections"].get(pg.get("products"))
+        after = related_section(col["title"], col["products"], "grid--page") if col else ""
         pages[f"pages/{h}.html"] = page_simple(f"pages/{h}.html", pg["title"], html_, after=after, kicker="Guide", description=pg.get("description"))
     for f in sorted((DATA / "policies").glob("*.html")):
         raw = f.read_text(encoding="utf-8")
         title = re.match(r"<!--\s*(.*?)\s*-->", raw).group(1)
         body = re.sub(r"^<!--.*?-->\s*", "", raw)
+        body = re.sub(r"(?:<br\s*/?>\s*){2,}", "</p><p>", body)  # double saut de ligne = nouveau paragraphe : un seul rythme (toujours dans un <p> ici)
         path = f"policies/{f.stem}.html"
         pages[path] = page_simple(path, title, body, "rte policy", kicker="Legal", aside=policy_index(path),
                                   description=textwrap.shorten(text_of(body), 160, placeholder="…"))

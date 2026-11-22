@@ -15,7 +15,6 @@
   "_aide": "couleur d'accent par collection (cle = collection de content.json) ; sans entree : noir",
   "cherry": "#7a0a22"
  },
- "logo": "//madebyscu.com/cdn/shop/files/denim_details_30.png?v=1781732004",
  "favicon": "//madebyscu.com/cdn/shop/files/denim_details_28.png?v=1779040215",
  "announcement": "FREE SHIPPING ON DOMESTIC ORDERS OVER £120",
  "menu": [
@@ -58,6 +57,7 @@
  "home": {
   "hero": {
    "image": "//madebyscu.com/cdn/shop/files/IMG_2594.jpg?v=1790549682",
+   "alt": "Model wearing the Cherry tracksuit in front of a blue car",
    "title": "Cherry tracksuit out now",
    "button": "Shop now",
    "link": "collections/cherry.html",
@@ -103,7 +103,6 @@
     "//madebyscu.com/cdn/shop/files/IMG_2675.jpg?v=1790549879",
     "//madebyscu.com/cdn/shop/files/IMG_2714.jpg?v=1790549878",
     "//madebyscu.com/cdn/shop/files/IMG_2425.jpg?v=1790549879",
-    "//madebyscu.com/cdn/shop/files/IMG_2594_23dd920e-df19-40c6-bfaf-31b13db0f0de.jpg?v=1790549880",
     "//madebyscu.com/cdn/shop/files/IMG_2334.jpg?v=1790550099"
    ],
    "heading": "Lookbook",
@@ -111,8 +110,7 @@
   },
   "newsletter": {
    "title": "Don't miss out",
-   "text": "Join our email list below",
-   "thanks": "Thanks for subscribing"
+   "text": "Join our email list below"
   },
   "featured_text": "Custom panelling, logo embroidery and an engraved zipper. A relaxed boxy fit up top, a tapered fit below."
  },
